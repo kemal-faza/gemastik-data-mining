@@ -1,18 +1,81 @@
-# 🗺️ PLAN — GEMASTIK XVIII Data Mining 2025
+# PLAN -- GEMASTIK XVIII Data Mining 2025
 
 > **Tujuan:** Dokumen ini berisi seluruh topik yang telah direkomendasikan dan dievaluasi untuk Technical Report GEMASTIK Data Mining 2025, lengkap dengan *problem statement* mendalam, *scoring* per rubrik, *pipeline design*, *evaluation strategy*, serta analisis risiko dan mitigasi.
 >
-**Update terakhir:** 17 Mei 2026
+> **Update terakhir:** 17 Mei 2026
 >
-**Status:** Telah diperbarui dengan 12 topik (4 baru + 8 existing). Siap untuk [§6: Decision Checklist](#6-decision-checklist).
+> **Status:** Final -- 12 topik siap dipilih. Gunakan Executive Summary di bawah untuk keputusan cepat, lalu [Decision Checklist](#6-decision-checklist) untuk finalisasi.
 
 ---
 
-## 📑 Daftar Isi
+## 0. Executive Summary -- Quick Decision Dashboard
 
-1. [Ringkasan Aturan & Rubrik](#1-ringkasan-aturan--rubrik)
-2. [Pola Pemenang Historis](#2-pola-pemenang-historis)
-3. [Ranking Topik Lengkap (12 Topik, Detail Penuh)](#3-ranking-topik-lengkap-12-topik-detail-penuh)
+### Top 3 Recommendations
+
+| | #1 **WaterWatch-ID** | #2 **DengueCast-X** | #3 **TraceFish-ID** |
+|---|-------------------|-----------------|-----------------|
+| Score | **90/100** | **91/100** | **91/100** |
+| Pilar Kemandirian Bangsa | Swasembada Air | Kesehatan Publik | Ekonomi Biru |
+| Mengapa | Best balance novelty + impact; multi-modal pipeline | Proven winner pattern; highest public impact | Highest novelty; untouched domain |
+| Butuh | GPU, skill hidrologi/RS | GPU, data DBD per kabupaten | GPU, trajectory ML skill |
+| Risiko | Data KLHK sparse | Data DBD availability | Label IUU unsupervised |
+| Skip Jika | Tidak punya GPU | Data DBD unavailable | Tidak ada maritime domain |
+
+### Kemandirian Bangsa Pillar Map
+
+| Pilar Kemandirian Bangsa | Topik Tersedia | Rekomendasi |
+|--------------------------|---------------|-------------|
+| Swasembada Air | **WaterWatch-ID** | WaterWatch-ID |
+| Swasembada Pangan | PanganShock-X, PadiWatch-X | PanganShock-X |
+| Ekonomi Biru | **TraceFish-ID** | TraceFish-ID |
+| Ekonomi Hijau | **WasteWise-ID** | WasteWise-ID |
+| Kesehatan Publik | DengueCast-X, AirGuard | DengueCast-X |
+| Pendidikan | **EduDrop-ID** | EduDrop-ID |
+| Kebencanaan | ApiShield-ID, HydroRisk-ID, GempaRank-X | ApiShield-ID |
+| Keamanan Digital | JudolFlow-X | *(advanced only)* |
+
+### Pick Your Topic in 30 Seconds
+
+| Profil Tim | Top Pick | Runner-up | Kenapa |
+|------------|----------|-----------|--------|
+| GPU kuat, RS skill, mau kompleks | **WaterWatch-ID** | TraceFish-ID | TFT + GAT + ViT multi-branch pipeline |
+| GPU terbatas, tabular expert | **EduDrop-ID** | PanganShock-X | XGBoost + Mixed Effects; tanpa GPU |
+| Remote sensing expert | **ApiShield-ID** | WaterWatch-ID | FIRMS + Sentinel, visual storytelling |
+| Ingin public impact tertinggi | **DengueCast-X** | EduDrop-ID | DBD isu nasional #1, dampak langsung |
+| Paling aman, no surprises | **PanganShock-X** | AirGuard | Data PIHPS bersih, pipeline lurus |
+| Ingin novelty maksimal | **TraceFish-ID** | JudolFlow-X | Trajectory Transformer belum pernah ada |
+
+### Score Distribution
+
+```
+90     WaterWatch-ID
+91     DengueCast-X  TraceFish-ID
+91     PanganShock-X  ApiShield-ID
+89     HydroRisk-ID
+88     PadiWatch-X
+87     EduDrop-ID
+86     WasteWise-ID  GempaRank-X
+84     JudolFlow-X  AirGuard
+```
+
+---
+## 1. How to Use This Document
+
+1. **Baca Executive Summary (di atas)** -- tentukan profil tim, lihat rekomendasi langsung
+2. **Scan Topic Cards (Section 5)** -- bandingkan 2-3 topik yang cocok dalam 30 detik per card
+3. **Gunakan Decision Engine (Section 7)** -- validasi pilihan berdasarkan 3 dimensi
+4. **Finalisasi dengan Decision Checklist (Section 9)** -- pastikan semua kriteria terpenuhi
+5. **Akses Full Detail (Appendix/Section 10)** -- hanya jika butuh informasi teknis untuk writing phase
+
+---
+
+## 2. Daftar Isi
+
+1. [Executive Summary](#-executive-summary--quick-decision-dashboard)
+2. [How to Use This Document](#1-how-to-use-this-document)
+3. [Aturan & Rubrik](#3-aturan--rubrik)
+4. [Pola Pemenang Historis](#4-pola-pemenang-historis)
+5. [Topic Cards (12 Topik)](#-topic-cards-12-topik)
    - [Rank 1: WaterWatch-ID](#-rank-1-waterwatch-id)
    - [Rank 2: DengueCast-X](#-rank-2-denguecast-x)
    - [Rank 3: TraceFish-ID](#-rank-3-tracefish-id)
@@ -25,16 +88,16 @@
    - [Rank 10: GempaRank-X](#-rank-10-gemparank-x)
    - [Rank 11: JudolFlow-X](#-rank-11-judolflow-x)
    - [Rank 12: AirGuard Sekolah](#-rank-12-airguard-sekolah)
-4. [Comparison Matrix & Trade-offs](#4-comparison-matrix--trade-offs)
-5. [Pipeline Architecture Template](#5-pipeline-architecture-template)
-6. [Decision Checklist](#6-decision-checklist)
-7. [Appendix: Sumber Dataset per Topik](#7-appendix-sumber-dataset-per-topik)
+6. [Comparison Matrix & Trade-offs](#-comparison-matrix--trade-offs)
+7. [Decision Engine](#-decision-engine)
+8. [Pipeline Architecture](#-pipeline-architecture)
+9. [Decision Checklist](#-decision-checklist)
+10. [Appendix: Full Detail per Topik](#appendix-full-detail-per-topik)
 
 ---
+## 3. Ringkasan Aturan & Rubrik
 
-## 1. Ringkasan Aturan & Rubrik
-
-### 1.1 Ketentuan Technical Report (Babak Penyisihan)
+### 3.1 Ketentuan Technical Report (Babak Penyisihan)
 
 Sumber: *Panduan GEMASTIK 2025 — Divisi Penambangan Data*
 
@@ -57,7 +120,7 @@ Sumber: *Panduan GEMASTIK 2025 — Divisi Penambangan Data*
 - WAJIB orisinal (bukan GenAI murni), belum pernah dipublikasikan termasuk untuk kompetisi lain
 - Tools / library / framework / Generative AI **diperbolehkan** sebagai alat bantu
 
-### 1.2 Rubrik Penilaian Babak Penyisihan
+### 3.2 Rubrik Penilaian Babak Penyisihan
 
 | No | Kriteria | Bobot | Indikator Penilaian |
 |----|----------|:-----:|---------------------|
@@ -67,7 +130,7 @@ Sumber: *Panduan GEMASTIK 2025 — Divisi Penambangan Data*
 | 4 | **Kejelasan tulisan** | 20% | Mudah dipahami; terstruktur; bahasa jelas dan ilmiah |
 | 5 | **Kelengkapan laporan** | 20% | Semua bagian terisi; eksperimen cukup; analisis mendalam |
 
-### 1.3 Babak Final
+### 3.3 Babak Final
 
 | Komponen | Bobot | Keterangan |
 |----------|:-----:|------------|
@@ -83,9 +146,9 @@ Hidden dataset → 5 jam build model → dokumentasi PPT → presentasi onsite
 
 ---
 
-## 2. Pola Pemenang Historis
+## 4. Pola Pemenang Historis
 
-### 2.1 Rekam Jejak Pemenang GEMASTIK Data Mining
+### 4.1 Rekam Jejak Pemenang GEMASTIK Data Mining
 
 | Tahun | Peringkat | Tim | Institusi | Topik Preliminary |
 |-------|:---------:|-----|-----------|-------------------|
@@ -100,7 +163,7 @@ Hidden dataset → 5 jam build model → dokumentasi PPT → presentasi onsite
 
 **Pola Institusi Pemenang:** Didominasi UI (3 medali 2024-2025), ITB (3 medali 2021-2023), dan Telkom University.
 
-### 2.2 Pola yang Terulang — Lessons Learned
+### 4.2 Pola yang Terulang — Lessons Learned
 
 | # | Prinsip | Penjelasan | Contoh Empiris |
 |---|---------|-----------|----------------|
@@ -114,1342 +177,720 @@ Hidden dataset → 5 jam build model → dokumentasi PPT → presentasi onsite
 
 ---
 
-## 3. Ranking Topik Lengkap (12 Topik, Detail Penuh)
-
-Berikut adalah **12 topik** yang telah dianalisis dan diperbarui dengan fokus pada **Kemandirian Bangsa** (swasembada pangan, energi, air, ekonomi kreatif, ekonomi hijau, ekonomi biru). Diurutkan dari yang **paling direkomendasikan** (Rank 1) hingga **paling tidak direkomendasikan** (Rank 12) berdasarkan total score dan analisis multidimensi terhadap rubrik GEMASTIK 2025 serta pola pemenang historis.
+## 5. Topic Cards (12 Topik)
 
 ---
-### 🥇 Rank 1: WaterWatch-ID
 
-**Score: 90/100** | **Kategori: Swasembada Air** | **Risiko Eksekusi: Medium**
+### Rank 1: WaterWatch-ID
 
-> **Judul Resmi:**
+| Score | Kategori | Pilar K.B. | Risk | GPU | Data | **Best For:** |
+|:-----:|----------|------------|:----:|:---:|:----:|---------------|
+| 90/100 | Air | Swasembada Air | Med | Yes | ⭐⭐⭐⭐ | Tim multimodal, lingkungan |
+| **Skip If:** No GPU, no remote sensing / hidrologi background |
+
 > *WaterWatch-ID: Prediksi Multimodal Water Quality Index Sungai-Sungai Indonesia untuk Ranking Prioritas Restorasi Daerah Aliran Sungai*
 
----
+#### Problem
 
-#### Problem Statement
+59% sungai Indonesia tercemar berat (data KLHK). Monitoring kualitas air bersifat sparse dan reaktif. WaterWatch-ID menjawab: **"segmen DAS mana yang berisiko penurunan kualitas air dalam 1-4 minggu ke depan?"** -- ranking prioritas restorasi untuk KLHK/BBWS.
 
-Kualitas air sungai di Indonesia mengalami penurunan signifikan -- 59% sungai dalam status tercemar berat (data KLHK). Pencemaran berasal dari limbah industri, domestik, dan pertanian. Indeks Kualitas Air (IKA) dipantau secara berkala oleh KLHK, namun data monitoring bersifat sparse dan reaktif.
+#### Pipeline
 
-WaterWatch-ID menjawab: **"segmen sungai di DAS mana yang memiliki risiko penurunan kualitas air dalam 1-4 minggu ke depan, sehingga prioritas restorasi dan pengawasan bisa dialokasikan secara proaktif?"**
+| Branch | Model | Purpose |
+|--------|-------|---------|
+| A: Temporal | TFT | Multi-horizon forecasting parameter kimia (DO/BOD/COD) |
+| B: Graph | GAT | Propagasi polusi hulu-hilir antar segmen DAS |
+| C: Vision | ViT / ResNet50 | Klasifikasi kualitas air dari Sentinel-2 NDWI |
+| D: Tabular | CatBoost | Baseline dari land use + iklim + demografi |
+| **Fusion** | Weighted stacking + Platt scaling | Calibrated WQI risk rank |
 
-Topik ini menyentuh pilar **Swasembada Air** (Kemandirian Bangsa) dan merupakan satu-satunya topik GEMASTIK yang mengintegrasikan data parameter kimiawi, citra satelit, dan graph daerah aliran sungai dalam satu pipeline.
+Baseline: Mean imputation → Prophet → CatBoost → TFT → **TFT+GAT+ViT full fusion** | Ablations: -GAT, -ViT, -TFT
 
----
+#### Rubrik: A:18 | N:19 | M:19 | J:17 | K:17 = **90/100**
 
-#### Rubrik Scoring Breakdown
+#### Why Choose This
 
-| Keaslian (20) | Kebaruan (20) | Manfaat (20) | Kejelasan (20) | Kelengkapan (20) | **Total** |
-|:-------------:|:-------------:|:------------:|:--------------:|:----------------:|:---------:|
-| 18 | 19 | 19 | 17 | 17 | **90** |
+1. **Swasembada Air = pilar Kemandirian Bangsa untouched** -- belum ada tim GEMASTIK di topik air
+2. **Multi-modal pipeline paling variatif** -- time-series + graph + vision + tabular dalam 1 sistem
+3. **Data dari KLHK + Sentinel-2 gratis** -- tidak perlu scraping kontroversial
 
-| Kriteria | Score | Justifikasi |
-|----------|:-----:|-------------|
-| **Keaslian** | 18/20 | Water quality prediction sudah ada, tapi *multi-branch fusion (TFT+GAT+ViT) untuk ranking prioritas restorasi DAS* sangat orisinal. |
-| **Kebaruan** | 19/20 | Belum ada yang mengintegrasikan time-series parameter kimia + graph DAS + citra satelit (ViT) untuk WQI di Indonesia. |
-| **Manfaat** | 19/20 | Air bersih adalah fondasi kemandirian bangsa. Relevan dengan SDG 6 (Clean Water & Sanitation). |
-| **Kejelasan** | 17/20 | Butuh domain knowledge dasar tentang parameter kualitas air (DO, BOD, COD, pH, TSS). |
-| **Kelengkapan** | 17/20 | Data KLHK perlu preprocessing karena sparse. Tapi setelah bersih, baselines dan ablations jelas. |
+#### Top Risks
 
----
+1. Data KLHK sparse per titik monitoring (40%) -- fokus ke 5 DAS prioritas (Citarum, Brantas, Bengawan Solo)
+2. TFT/GAT/ViT butuh GPU (50%) -- ViT ganti feature extraction GEE offline; TFT -> LSTM
+3. Domain hidrologi terbatas (30%) -- konsultasi dosen lingkungan; referensi PP 22/2021
 
-#### Data & Preprocessing Pipeline
+#### M1: Data Eng (KLHK, BMKG, Sentinel-2, graph DAS) | M2: Model (TFT, GAT, ViT, fusion) | M3: Eval (metrics, ablation, spatial consistency)
 
-**Data Sources:**
-
-| Data | Sumber Utama | Variabel Kunci | Akses |
-|------|-------------|----------------|-------|
-| Parameter kualitas air historis | KLHK / Satu Data Indonesia | DO, BOD, COD, pH, TSS, Nitrat, Fosfat | data.go.id |
-| Debit & elevasi sungai | BBWS / Kementerian PUPR | Debit harian, tinggi muka air | Data PUPR |
-| Land use catchment area | KLHK / Geospatial Bappenas | Proporsi hutan, sawah, industri, permukiman | geoportal.bappenas |
-| Citra satelit optik | Copernicus Sentinel-2 | NDWI, turbidity | Google Earth Engine |
-| Curah hujan & iklim | BMKG | Curah hujan harian, intensitas | iklim.bmkg.go.id |
-| Graph DAS | Bappenas / OSM | Segmen sungai, anak sungai, muara | Geospasial |
-
-**Preprocessing Steps:**
-1. **Aggregasi temporal** -- rata-rata parameter per minggu per titik sampling
-2. **Interpolasi sparse** -- KNN Imputer + temporal interpolation untuk titik dengan data tidak lengkap
-3. **Fusion data spasial** -- join titik monitoring ke segmen DAS terdekat berdasarkan jarak
-4. **NDWI extraction** -- median composite per 2 minggu dari Sentinel-2, cloud-masked
-5. **Lag features** -- rolling window 1, 2, 4, 8 minggu untuk parameter kimia dan curah hujan
-6. **Graph construction** -- DAS graph: nodes = segmen sungai, edges = aliran hulu-hilir
-7. **Train/val/test split** -- temporal walk-forward, test set = tahun terbaru
+[Full detail ->](#appendix-waterwatch-id)
 
 ---
 
-#### Modeling Stack
+### Rank 2: DengueCast-X
 
-| Stage | Model | Detail Arsitektur | Output |
-|-------|-------|-------------------|--------|
-| **Branch A: Temporal** | Temporal Fusion Transformer (TFT) | Multi-horizon forecasting parameter kimia 1-4 week ahead | WQI forecast + uncertainty |
-| **Branch B: Graph** | Graph Attention Network (GAT) | Propagasi polusi antar segmen sungai di DAS yang sama | Spatial risk propagation |
-| **Branch C: Vision** | Vision Transformer (ViT) / ResNet50 | Classify kualitas air dari Sentinel-2 NDWI + turbidity | Visual water quality class |
-| **Branch D: Tabular** | CatBoost | Fitur land use, iklim, dan demografi per DAS | Static risk baseline |
-| **Fusion** | Weighted stacking + Platt calibration | Cross-attention temporal + spatial + visual | Final WQI risk rank |
+| Score | Kategori | Pilar K.B. | Risk | GPU | Data | **Best For:** |
+|:-----:|----------|------------|:----:|:---:|:----:|---------------|
+| 91/100 | Kesehatan | Kesehatan Publik | Med | Yes | ⭐⭐⭐⭐ | Tim yang ingin win chance tertinggi |
+| **Skip If:** Data DBD per kabupaten tidak tersedia |
 
-**Baseline Ladder:**
-1. Mean imputation + linear interpolation (naive)
-2. Prophet untuk tiap parameter (time-series naive)
-3. CatBoost full features (strong tabular)
-4. TFT only (deep sequence)
-5. TFT + GAT + ViT + Tabular fusion (**proposed**)
-6. Ablations: -GAT, -ViT, -TFT
-
----
-
-#### Evaluation Strategy
-
-| Metrik | Tujuan |
-|--------|--------|
-| **MAE / RMSE** | Primary -- error WQI regresi |
-| **MAPE** | Persentase error untuk interpretasi |
-| **PR-AUC** | Untuk klasifikasi status mutu air (baik/cemar ringan/cemar berat) |
-| **Recall@Top-K segmen** | Operational -- apakah segmen prioritas restorasi tertangkap |
-| **Spatial consistency** | Apakah prediksi konsisten secara spasial (hulu-hilir) |
-| **Ablation gain** | Kontribusi tiap branch terhadap akurasi |
-
----
-
-#### Role Split (3 Member)
-
-| Member | Role | Tanggung Jawab Spesifik |
-|--------|------|------------------------|
-| **M1 -- Data Lead** | Data Engineering | Scraping KLHK/BMKG/Sentinel-2; interpolasi sparse; graph DAS; EDA report |
-| **M2 -- Model Lead** | Modeling | TFT + GAT + ViT + CatBoost; fusion; hyperparameter tuning |
-| **M3 -- Eval Lead** | Evaluation & Report | Metric design; ablation study; spatial consistency check; technical report |
-
----
-
-#### Why It Wins (GEMASTIK Context)
-
-1. **Swasembada Air sebagai pilar Kemandirian Bangsa** -- belum ada tim GEMASTIK yang menyentuh topik air sama sekali
-2. **Multi-modal pipeline paling variatif** -- time-series + graph + vision + tabular = diversity tertinggi dari semua topik
-3. **Data tersedia dari KLHK dan Satu Data Indonesia** -- tidak perlu scraping kontroversial
-4. **Visual storytelling dari peta DAS** -- sangat kuat untuk presentasi dan laporan
-5. **Novelty tinggi** -- integrasi TFT + GAT + ViT untuk WQI di Indonesia benar-benar baru
-
-#### Risiko & Mitigasi
-
-| Risiko | Severity | Probabilitas | Mitigasi |
-|--------|:--------:|:------------:|----------|
-| Data monitoring KLHK sparse (tidak semua titik update mingguan) | HIGH | 40% | Fokus ke 5-10 DAS prioritas (Citarum, Bengawan Solo, Brantas) dengan data terbanyak; interpolasi gap |
-| TFT/GAT/ViT butuh GPU | MEDIUM | 50% | Branch C (ViT) ganti feature extraction offline dari GEE; TFT -> LSTM; GAT -> spatial lag |
-| Domain knowledge hidrologi terbatas | LOW | 30% | Konsultasi dosen lingkungan; gunakan PP 22/2021 untuk baku mutu air |
-
----
-
-### 🥇 Rank 2: DengueCast-X
-
-**Score: 91/100** | **Kategori: Kesehatan Publik** | **Risiko Eksekusi: Medium**
-
-> **Judul Resmi:**
 > *DengueCast-X: Prediksi Risiko Kejadian DBD Berbasis Spatiotemporal Data Mining untuk Prioritas Intervensi Wilayah*
 
----
+#### Problem
 
-#### 🩺 Problem Statement
+DBD adalah beban kesehatan masyarakat terbesar di Indonesia dengan pola musiman. DengueCast-X menjawab: **"district mana yang harus diintervensi sebelum wabah melonjak?"** -- ranking district intervention priority untuk fogging, larvasida, dan kesiapsiagaan RS.
 
-Demam Berdarah Dengue (DBD) merupakan salah satu beban kesehatan masyarakat terbesar di Indonesia. Setiap tahun, ribuan kasus dilaporkan dengan pola musiman yang dipengaruhi oleh iklim, kepadatan penduduk, dan mobilitas. Pendekatan konvensional hanya menjawab pertanyaan "berapa jumlah kasus?" — bukan pertanyaan yang lebih operasional: **"district mana yang harus diintervensi sebelum wabah melonjak?"**
+#### Pipeline
 
-DengueCast-X mentransformasi *forecasting* konvensional menjadi **spatiotemporal risk ranking system**. Sistem ini memprediksi risiko outbreak DBD per district dalam 2–4 minggu ke depan dan menghasilkan **ranked district intervention priority list** — sehingga fogging, larvasida, PSN, dan kesiapsiagaan rumah sakit bisa dialokasikan secara optimal.
+| Branch | Model | Purpose |
+|--------|-------|---------|
+| A: Tabular | CatBoost / LightGBM | Lag features + class weighting + interaction terms |
+| B: Temporal | TFT | Multi-horizon forecasting (2-4 week); interpretable attention |
+| C: Graph | GraphSAGE / GAT | Spillover antar district via adjacency graph |
+| D: Text (opt) | Qwen3 / BGE-M3 | News embedding -> district-level risk signal |
+| **Fusion** | Weighted stacking + Platt | Calibrated risk rank per district-week |
 
-Ini selaras dengan pola pemenang GEMASTIK: **bukan model terbaik, tapi pipeline yang menjawab masalah nyata dengan metrik yang tepat.**
+Baseline: SARIMA/Prophet -> LightGBM -> TFT -> **Full fusion** | Ablations: -GNN, -TFT, -text
 
----
+#### Rubrik: A:18 | N:19 | M:20 | J:17 | K:17 = **91/100**
 
-#### 📊 Rubrik Scoring Breakdown
+#### Why Choose This
 
-| Keaslian (20) | Kebaruan (20) | Manfaat (20) | Kejelasan (20) | Kelengkapan (20) | **Total** |
-|:-------------:|:-------------:|:------------:|:--------------:|:----------------:|:---------:|
-| 18 | 19 | 20 | 17 | 17 | **91** |
+1. **Manfaat publik langsung tertinggi** -- DBD masalah kesehatan paling terlihat di Indonesia
+2. **Multi-view pipeline = winner pattern** -- 3-4 branch + fusion persis seperti pola pemenang GEMASTIK
+3. **Explainability built-in** -- SHAP + TFT attention = defensible di Q&A juri
 
-| Kriteria | Score | Justifikasi |
-|----------|:-----:|-------------|
-| **Keaslian** | 18/20 | DBD prediction sudah ada, tapi *district-week early warning + intervention ranking + multi-view fusion* orisinal. Bukan sekadar "prediksi DBD pakai XGBoost". |
-| **Kebaruan** | 19/20 | Kombinasi TFT + GNN + CatBoost + text embedding untuk DBD di Indonesia sangat jarang. Novelty kuat di arsitektur pipeline. |
-| **Manfaat** | 20/20 | Sangat jelas: early intervention sebelum outbreak spike. Dampak publik langsung terlihat. |
-| **Kejelasan** | 17/20 | Kompleksitas medium. Perlu framing hati-hati: "ranking prioritas intervensi" lebih intuitif dari "prediksi jumlah kasus". |
-| **Kelengkapan** | 17/20 | Dapat dibuat lengkap. Dataset construction butuh effort, tapi baselines dan ablations jelas. |
+#### Top Risks
 
----
+1. Data DBD kabupaten tidak lengkap (30%) -- fallback ke 5-10 sentinel cities; atau provinsi-level
+2. TFT/GNN butuh GPU (40%) -- GNN ganti spatial lag features; TFT ganti LSTM/GRU
+3. Temporal overfitting / distribution shift (50%) -- forward-chaining validation wajib; walk-forward CV
 
-#### 🗃️ Data & Preprocessing Pipeline
+#### M1: Data Eng (Kemenkes, BMKG, BPS, graph adjacency) | M2: Model (CatBoost, TFT, GNN, fusion) | M3: Eval (metrics, ablation, SHAP, report writing)
 
-**Data Sources:**
-
-| Data | Sumber Utama | Variabel Kunci | Akses |
-|------|-------------|----------------|-------|
-| Kasus DBD historis | Kemenkes / Satu Data Indonesia | Incidence count per district-week | data.go.id |
-| Iklim & cuaca | BMKG API | Rainfall, temperature, humidity | iklim.bmkg.go.id |
-| Demografi | BPS API | Populasi, density, urbanisasi | webapi.bps.go.id |
-| Geospasial | OpenStreetMap | District adjacency, elevasi, sungai | download.geofabrik.de |
-| Berita kesehatan (optional) | Google News scraping | Outbreak keywords, sentiment | RSS/NLP pipeline |
-
-**Preprocessing Steps:**
-1. **Aggregasi mingguan** — dari data harian ke level district-week
-2. **Rolling lag windows** — 1, 2, 4, 8, 12 minggu untuk semua fitur kontinu
-3. **Normalisasi per-district** — standarisasi berbasis mean/std historis masing-masing
-4. **Imputasi missing value** — MICE (Multivariate Imputation by Chained Equations) untuk data cuaca yang tidak lengkap
-5. **Outlier handling** — IQR method atau Isolation Forest pada data kasus ekstrem
-6. **Spatial adjacency matrix** — binary adjacency berdasarkan boundary sharing dari OSM
-7. **Train/val/test split** — forward-chaining temporal, *bukan* random split (cegah leakage)
+[Full detail ->](#appendix-denguecast-x)
 
 ---
 
-#### 🧠 Modeling Stack
+### Rank 3: TraceFish-ID
 
-| Stage | Model | Detail Arsitektur | Output |
-|-------|-------|-------------------|--------|
-| **Branch A: Tabular** | CatBoost / LightGBM | Lag features + interaction terms + class weighting (scale_pos_weight / SMOTE) | Risk score rₐ |
-| **Branch B: Temporal Deep** | Temporal Fusion Transformer (TFT) | Multi-horizon forecasting (2-4 week); interpretable attention over time | Risk score rᵦ |
-| **Branch C: Graph** | GraphSAGE / GAT (PyTorch Geometric) | 2-layer GNN on district adjacency graph; captures spillover | Risk score rᵧ |
-| **Branch D: Text** (optional) | Qwen3 Embedding / BGE-M3 | News text → dense embedding → district-level risk feature | Text risk score rδ |
-| **Fusion** | Weighted stacking + Platt calibration | Grid search weight (rₐ, rᵦ, rᵧ, rδ) → calibrated probability [0,1] | Final risk rank |
+| Score | Kategori | Pilar K.B. | Risk | GPU | Data | **Best For:** |
+|:-----:|----------|------------|:----:|:---:|:----:|---------------|
+| 91/100 | Maritim | Ekonomi Biru | Med-High | Yes | ⭐⭐⭐⭐ | Tim ingin novelty tertinggi |
+| **Skip If:** Tidak ada maritime domain knowledge / skill trajectory ML |
 
-**Baseline Ladder (Wajib untuk Technical Report):**
-1. SARIMA / Prophet — naive baseline
-2. LightGBM tanpa spatial/text features — strong tabular baseline
-3. TFT only — deep sequence baseline
-4. Full pipeline (ALL branches + fusion) — advanced method
-5. Ablations: -GNN, -TFT, -text, no fusion
-
----
-
-#### 📐 Evaluation Strategy
-
-| Metrik | Tujuan Pengukuran |
-|--------|------------------|
-| **PR-AUC** | Primary metric — captures ranking quality with heavy class imbalance (outbreak ≈ rare event) |
-| **Recall@Top-10% districts** | Operational utility — % outbreak tertangkap di 10% prioritas tertinggi |
-| **Recall@Top-20% districts** | Secondary — coverage breadth |
-| **Temporal backtesting** | Walk-forward validation across multiple outbreak seasons |
-| **Lead-time gain** | Ratio: warning lead time vs baseline (e.g., +X minggu lebih awal dari metode naive) |
-| **Calibration error (ECE)** | Apakah probability calibrated → uncertainty bands dapat dipercaya |
-| **SHAP / attention visualization** | Explainability — fitur apa yang paling berkontribusi per district |
-
----
-
-#### 👥 Role Split (3 Member)
-
-| Member | Role | Tanggung Jawab Spesifik |
-|--------|------|------------------------|
-| **M1 — Data Lead** | Data Engineering | Scraping Kemenkes/BMKG/BPS; aggregation pipeline; spatial graph construction; EDA report |
-| **M2 — Model Lead** | Modeling | CatBoost + TFT + GNN implementation, training, hyperparameter tuning, fusion |
-| **M3 — Eval Lead** | Evaluation & Report | Metric design; ablation study; SHAP analysis; technical report writing; PPT preparation |
-
----
-
-#### 🏆 Why It Wins (GEMASTIK Context)
-
-1. **Manfaat publik langsung** — DBD adalah salah satu masalah kesehatan paling terlihat di Indonesia
-2. **Multi-view pipeline** — 3 branch + fusion = *exactly* pola pemenang (pipeline > single model)
-3. **Metric-aware** — PR-AUC + Recall@Top-K = competition-coded metrics
-4. **Explainability built-in** — SHAP + TFT attention = defensible bawah Q&A juri
-5. **Framing kuat** — "intervention priority" > "prediction task" — lebih operasional dan lebih menarik
-6. **Novelty cukup** — belum ada publikasi GEMASTIK yang pakai TFT+GNN+fusion untuk DBD di Indonesia
-
----
-
-#### ⚠️ Risiko & Mitigasi
-
-| Risiko | Severity | Probabilitas | Mitigasi |
-|--------|:--------:|:------------:|----------|
-| Data DBD kabupaten tidak tersedia / incomplete | 🔴 HIGH | 30% | **Fallback:** provinsi-level; atau pilih 5-10 sentinel cities dengan data lengkap; atau ganti ke level kota besar |
-| TFT/GNN butuh GPU yang tidak dimiliki | 🟡 MEDIUM | 40% | **Fallback:** Branch C dari GNN → spatial lag features di tabular; TFT bisa ganti dengan LSTM/GRU sederhana |
-| Temporal overfitting / distribution shift | 🟡 MEDIUM | 50% | **Mitigasi:** Forward-chaining validation wajib; walk-forward CV; documented regime changes (e.g., El Niño) |
-| Overclaiming causality | 🟢 LOW | 60% | **Mitigasi:** Explicit disclaimer di laporan — korelasi ≠ kausalitas; gunakan "risk marker" framing |
-
----
-
-### 🥇 Rank 3: TraceFish-ID
-
-**Score: 91/100** | **Kategori: Ekonomi Biru** | **Risiko Eksekusi: Medium-Tinggi**
-
-> **Judul Resmi:**
 > *TraceFish-ID: Deteksi Aktivitas IUU Fishing Berbasis Trajectory Data Mining dan Graph Analysis untuk Prioritas Inspeksi Pelabuhan*
 
----
+#### Problem
 
-#### Problem Statement
+IUU fishing merugikan Indonesia Rp 100 triliun/tahun. Kapal asing dan lokal sulit diawasi di perairan 6,4 juta km2. TraceFish-ID menjawab: **"kapal mana yang berisiko IUU fishing dalam 24-48 jam?"** -- ranking prioritas inspeksi untuk KKP/Bakamla.
 
-Indonesia adalah negara maritim terbesar di dunia dengan luas perairan 6,4 juta km2. Namun, illegal, unreported, and unregulated (IUU) fishing merugikan negara hingga Rp 100 triliun per tahun. Kapal asing dan kapal berbendera Indonesia sering melakukan pelanggaran di wilayah perairan yang luas dan sulit diawasi.
+#### Pipeline
 
-TraceFish-ID menjawab: **"kapal mana yang memiliki probabilitas tertinggi melakukan IUU fishing dalam 24-48 jam ke depan, sehingga KKP dan Bakamla bisa memprioritaskan inspeksi?"** dengan menganalisis trajectory, kecepatan, pola berhenti, dan koneksi antar kapal.
+| Branch | Model | Purpose |
+|--------|-------|---------|
+| A: Trajectory | Trajectory Transformer / t2vec | Sequence embedding dari trajectory AIS -> anomaly score |
+| B: Tabular | XGBoost / CatBoost | Speed, turning angle, trip duration, ZEEI proximity |
+| C: Graph | RGCN / Hetero GAT | Bipartite graph kapal-pelabuhan untuk network anomaly |
+| D: Temporal | LSTM / TFT | Time-series posisi dan kecepatan terhadap waktu |
+| **Fusion** | Weighted stacking + threshold | Ensemble anomaly scores -> IUU risk rank |
 
-Topik ini menyentuh pilar **Ekonomi Biru** (Kemandirian Bangsa) -- domain yang sama sekali belum pernah tersentuh di GEMASTIK.
+Baseline: Rule-based (speed + ZEEI) -> Isolation Forest -> XGBoost -> Trajectory TF -> **Full pipeline** | Ablations: -graph, -trajectory, -temporal
 
----
+#### Rubrik: A:19 | N:20 | M:19 | J:17 | K:16 = **91/100**
 
-#### Rubrik Scoring Breakdown
+#### Why Choose This
 
-| Keaslian (20) | Kebaruan (20) | Manfaat (20) | Kejelasan (20) | Kelengkapan (20) | **Total** |
-|:-------------:|:-------------:|:------------:|:--------------:|:----------------:|:---------:|
-| 19 | 20 | 19 | 17 | 16 | **91** |
+1. **Ekonomi Biru = domain GEMASTIK yang belum tersentuh sama sekali**
+2. **Novelty metode tertinggi** -- Trajectory Transformer + GNN bipartite untuk fishing anomaly
+3. **Data AIS gratis dari Global Fishing Watch** -- dataset publik paling kaya untuk Indonesia
 
-| Kriteria | Score | Justifikasi |
-|----------|:-----:|-------------|
-| **Keaslian** | 19/20 | Sangat jarang ada tim GEMASTIK yang menyentuh illegal fishing + trajectory mining. |
-| **Kebaruan** | 20/20 | Trajectory Transformer + bipartite graph untuk fishing anomaly belum pernah dipakai di kompetisi mahasiswa Indonesia. |
-| **Manfaat** | 19/20 | IUU fishing adalah kerugian negara triliunan rupiah. Indonesia negara maritim -- relevansi maksimal. |
-| **Kejelasan** | 17/20 | Konsep trajectory analysis butuh penjelasan yang baik. Tapi framing "inspeksi prioritas" intuitif. |
-| **Kelengkapan** | 16/20 | Preprocessing trajectory berat; labeling IUU perlu proxy/logika domain. |
+#### Top Risks
 
----
+1. Label IUU tidak ada, problem unsupervised (80%) -- weak labeling rule-based + GFW fishing flags; framing sebagai anomaly detection
+2. AIS data noisy / gap coverage (50%) -- fallback: fokus ke kapal dengan coverage >70% trip
+3. Trajectory Transformer butuh skill spesifik (40%) -- branch A bisa diganti LSTM/GRU sederhana
 
-#### Data & Preprocessing Pipeline
+#### M1: Data Eng (GFW API, trajectory cleaning, feature extraction) | M2: Model (Trajectory TF, XGBoost, GNN) | M3: Eval (case study, temporal backtesting, report)
 
-**Data Sources:**
-
-| Data | Sumber Utama | Variabel Kunci | Akses |
-|------|-------------|----------------|-------|
-| AIS trajectory kapal | Global Fishing Watch API | Latitude, longitude, kecepatan, heading, timestamp | globalfishingwatch.org |
-| VMS data kapal Indonesia | KKP (pernah dirilis publik) | Kapal >30 GT, tracker wajib | Data terbuka |
-| Fishing zone / ZEEI | Bappenas / BIG | Batas ZEEI, kawasan konservasi, jalur pelayaran | Geospasial |
-| Data pelabuhan | KKP / BPS | Lokasi pelabuhan, kapasitas, riwayat inspeksi | Data publik |
-| Cuaca maritim | BMKG Maritim | Gelombang, angin, visibility | bmkg.go.id |
-
-**Preprocessing Steps:**
-1. **Trajectory resampling** -- interpolasi ke interval 10 menit untuk standardisasi
-2. **Fishing activity labeling** -- deteksi dari kecepatan <3 knot + random heading change; validasi GFW API
-3. **Feature extraction** -- speed distribution, turning angle, trip duration, jarak ke ZEEI, jarak ke pelabuhan
-4. **Port-to-port segmentation** -- pisahkan trajectory per trip (berangkat dari pelabuhan A -> kembali ke A/B)
-5. **Bipartite graph** -- nodes: kapal + pelabuhan; edges: frekuensi kunjungan, durasi
-6. **Anomaly score baseline** -- isolation forest pada fitur trajectory untuk label proxy
-7. **Temporal split** -- train pada tahun 2022-2023, validasi 2024, test pada 2025
+[Full detail ->](#appendix-tracefish-id)
 
 ---
 
-#### Modeling Stack
+### Rank 4: PanganShock-X
 
-| Stage | Model | Detail Arsitektur | Output |
-|-------|-------|-------------------|--------|
-| **Branch A: Trajectory** | Trajectory Transformer / t2vec | Sequence-to-sequence embedding dari trajectory point sequence | Trajectory anomaly score |
-| **Branch B: Tabular** | XGBoost / CatBoost | Fitur yang diekstrak dari trajectory (speed, turning, durasi, dll) | Fishing risk score |
-| **Branch C: Graph** | GNN (RGCN / Heterogeneous GAT) | Bipartite graph kapal-pelabuhan untuk link prediction dan community detection | Suspicious network score |
-| **Branch D: Temporal** | LSTM / TFT | Time-series fitur maritim: posisi, kecepatan terhadap waktu | Trajectory deviation score |
-| **Fusion** | Weighted stacking + threshold calibration | Ensemble anomaly scores + clustering confidence | Final IUU risk rank |
+| Score | Kategori | Pilar K.B. | Risk | GPU | Data | **Best For:** |
+|:-----:|----------|------------|:----:|:---:|:----:|---------------|
+| 91/100 | Pangan | Swasembada Pangan | Low | Optional | ⭐⭐⭐⭐⭐ | Tim yang ingin eksekusi paling aman |
+| **Skip If:** Ingin novelty tinggi tanpa added text/news branch |
 
-**Baseline Ladder:**
-1. Rule-based: kecepatan threshold + proximity to ZEEI (naive)
-2. Isolation Forest on tabular features (unsupervised anomaly)
-3. XGBoost with weak labels (supervised)
-4. Trajectory Transformer only (deep sequence)
-5. Full pipeline: trajectory + tabular + graph + temporal (**proposed**)
-6. Ablations: -graph, -trajectory, -temporal
-
----
-
-#### Evaluation Strategy
-
-| Metrik | Tujuan |
-|--------|--------|
-| **PR-AUC** | Primary -- IUU fishing sangat rare (<1% trips) |
-| **Recall@Top-K kapal** | Operational -- apakah kapal IUU tertangkap di K prioritas inspeksi |
-| **F1 per jenis IUU** | Distinguish: transshipment, boundary violation, gear violation |
-| **Cluster purity** | Graph community detection quality |
-| **Temporal backtesting** | Apakah deteksi konsisten antar musim/tahun |
-| **Case studies** | Validasi pada kasus IUU yang sudah terkonfirmasi media/laporan |
-
----
-
-#### Role Split (3 Member)
-
-| Member | Role | Tanggung Jawab Spesifik |
-|--------|------|------------------------|
-| **M1 -- Data Lead** | Data Engineering | GFW API ingestion; trajectory cleaning; feature extraction; EDA report |
-| **M2 -- Model Lead** | Modeling | Trajectory Transformer + XGBoost + GNN; fusion; hyperparameter tuning |
-| **M3 -- Eval Lead** | Evaluation & Report | Metric design; case study; temporal backtesting; technical report writing |
-
----
-
-#### Why It Wins (GEMASTIK Context)
-
-1. **Ekonomi Biru sebagai pilar Kemandirian Bangsa** -- domain yang sama sekali belum tersentuh di GEMASTIK
-2. **Novelty metode tertinggi** -- Trajectory Transformer + GNN bipartite untuk fishing anomaly benar-benar baru
-3. **Data AIS gratis dari Global Fishing Watch** -- salah satu dataset publik paling kaya untuk Indonesia
-4. **Dampak negara** -- IUU fishing = kerugian triliunan rupiah per tahun
-5. **Visual storytelling peta tracking kapal** -- sangat impresif untuk presentasi
-6. **"Inspeksi prioritas" framing** -- lebih operasional dari "deteksi IUU"
-
-#### Risiko & Mitigasi
-
-| Risiko | Severity | Probabilitas | Mitigasi |
-|--------|:--------:|:------------:|----------|
-| Label IUU tidak ada (unsupervised problem) | HIGH | 80% | Gunakan weak labeling: rule-based (kecepatan + proximity ZEEI) + GFW known-fishing flags; framing sebagai anomaly detection |
-| AIS data noisy / gap coverage | MEDIUM | 50% | Interpolasi gap pendek; fallback: fokus ke kapal dengan AIS coverage >70% trip |
-| Trajectory Transformer butuh skill | MEDIUM | 40% | Branch A bisa diganti LSTM/GRU sederhana jika waktu tidak cukup |
-| Data ethics & privasi | MEDIUM | 20% | Hanya gunakan data AIS publik; jangan scraping data kapal privat |
-
----
-
-### 🥇 Rank 4: PanganShock-X
-
-**Score: 91/100** | **Kategori: Ekonomi Pangan** | **Risiko Eksekusi: Rendah**
-
-> **Judul Resmi:**
 > *PanganShock-X: Prediksi Risiko Lonjakan Harga Pangan Strategis Berbasis Multiview Time-Series Data Mining*
 
----
+#### Problem
 
-#### 🌾 Problem Statement
+Harga pangan strategis Indonesia sangat volatil, berdampak pada inflasi dan ketahanan pangan. PanganShock-X menjawab: **"komoditas apa di region mana yang berisiko lonjakan harga dalam 7-14 hari?"** -- ranked region-commodity alert untuk Bulog/Pemda.
 
-Harga pangan strategis di Indonesia dikenal sangat volatil — dipengaruhi oleh cuaca, distribusi, kebijakan, dan spekulasi pasar. Kenaikan harga secara tiba-tiba (price spike) berdampak langsung pada inflasi, daya beli rumah tangga, dan ketahanan pangan nasional.
+#### Pipeline
 
-PanganShock-X menjawab pertanyaan: **"komoditas apa di region mana yang berisiko mengalami lonjakan harga dalam 7–14 hari ke depan?"** dengan menghasilkan **ranked region-commodity alert list** — sehingga Bulog / Pemda bisa melakukan intervensi pasar (operasi pasar, distribusi) sebelum harga melonjak.
+| Branch | Model | Purpose |
+|--------|-------|---------|
+| Baseline | Prophet / SARIMA | Seasonal decomposition with holiday effects |
+| A: Tabular | LightGBM / CatBoost | Lags + cross-features + holiday flags + commodity embeddings |
+| B: Temporal | TFT / N-HiTS / TiDE | Multi-horizon forecasting with exogenous weather |
+| C: Text (opt) | Qwen3 / BGE-M3 | Berita pangan -> sentiment/risk indicators |
+| **Output** | Dual obj: regression (price) + classification (spike) | Fused spike probability + uncertainty band |
 
-Topik ini adalah yang **paling aman secara eksekusi** — data bersih, metrik jelas, baseline mudah, dan laporan mudah ditulis lengkap.
+Baseline: Naive -> Prophet -> LightGBM -> TFT+Tabular -> **Full pipeline + calibration**
 
----
+#### Rubrik: A:17 | N:17 | M:19 | J:19 | K:19 = **91/100**
 
-#### 📊 Rubrik Scoring Breakdown
+#### Why Choose This
 
-| Keaslian (20) | Kebaruan (20) | Manfaat (20) | Kejelasan (20) | Kelengkapan (20) | **Total** |
-|:-------------:|:-------------:|:------------:|:--------------:|:----------------:|:---------:|
-| 17 | 17 | 19 | 19 | 19 | **91** |
+1. **Eksekusi paling aman** -- data PIHPS paling bersih, baseline mudah, risiko gagal rendah
+2. **Kejelasan & kelengkapan laporan tertinggi** -- konsep "lonjakan harga" dipahami semua orang
+3. **Dual objective** -- regression + classification = double validation = terlihat rigorous
 
-| Kriteria | Score | Justifikasi |
-|----------|:-----:|-------------|
-| **Keaslian** | 17/20 | Food price forecasting sudah ada, tapi *spike risk ranking + multiview fusion* tidak se-umum prediksi harga biasa. |
-| **Kebaruan** | 17/20 | Cukup baik jika menambahkan news/text branch dan uncertainty calibration. Tanpa itu, novelty medium. |
-| **Manfaat** | 19/20 | Sangat jelas: inflasi, food security, intervensi pasar. Bedanya dengan DengueCast: bukan masalah hidup-mati, jadi minus tipis. |
-| **Kejelasan** | 19/20 | Termudah untuk ditulis dan dijelaskan. Semua orang paham "harga naik itu masalah". |
-| **Kelengkapan** | 19/20 | Paling mudah untuk membuat laporan lengkap — data paling bersih, eksperimen paling straightforward. |
+#### Top Risks
 
----
+1. Bisa terasa "biasa saja" tanpa angle kuat -- tambahkan uncertainty calibration + spike risk ranking framing
+2. Data harga incomplete di beberapa region -- fokus ke 5-10 komoditas strategis + 10 kota besar
+3. Overlap dengan tim lain -- diferensiator: multiview + ranking + calibration
 
-#### 🗃️ Data & Preprocessing Pipeline
+#### M1: Data Eng (PIHPS scraping, panel construction, missing value) | M2: Model (Prophet, LightGBM, TFT, dual-objective) | M3: Eval (spike metrics, calibration, ablation per commodity)
 
-**Data Sources:**
-
-| Data | Sumber | Variabel | Akses |
-|------|--------|----------|-------|
-| Harga harian komoditas | PIHPS BPS | Harga beras, cabai, bawang, minyak, daging (50+ komoditas) | pipps.bps.go.id |
-| Inflasi daerah | BPS API | IHK per kota | webapi.bps.go.id |
-| Cuaca & iklim | BMKG | Rainfall, temperature, anomaly indices | iklim.bmkg.go.id |
-| Kalender tanam/panen | Kementan | Musim tanam per komoditas per region | Data terbuka |
-| Berita & sentimen | Google News / RSS | Berita pangan regional | Scraping NLP pipeline |
-
-**Preprocessing Pipeline:**
-1. **Panel time-series construction** — (region × commodity × date) multi-index
-2. **Spike labeling** — threshold-based (e.g., > 2 standard deviations from 30-day rolling mean, or > 5% daily change)
-3. **Missing price interpolation** — linear interpolation untuk gap ≤ 3 hari; forward-fill untuk gap lebih panjang
-4. **Rolling features** — mean, std, min, max untuk window 7, 14, 30 hari
-5. **Holiday & event flags** — puasa, lebaran, natal, tahun baru, pemilu
-6. **Calendar alignment** — harvest season per region × commodity
+[Full detail ->](#appendix-panganshock-x)
 
 ---
 
-#### 🧠 Modeling Stack
+### Rank 5: ApiShield-ID
 
-| Stage | Model | Detail |
-|-------|-------|--------|
-| **Baseline** | Prophet / SARIMA | Seasonal decomposition with holiday effects |
-| **Branch A: Tabular** | LightGBM / CatBoost | Lags + cross-features + holiday flags + commodity embeddings |
-| **Branch B: Temporal Deep** | TFT / N-HiTS / TiDE | Multi-horizon forecasting with exogenous weather signals |
-| **Branch C: Text Signal** (optional) | Qwen3 Embedding / BGE-M3 | Embed berita pangan → weekly sentiment/risk indicators |
-| **Output** | Dual objective: regression (expected price) + classification (spike/no-spike) → fused spike probability + uncertainty band |
+| Score | Kategori | Pilar K.B. | Risk | GPU | Data | **Best For:** |
+|:-----:|----------|------------|:----:|:---:|:----:|---------------|
+| 91/100 | Lingkungan | Kebencanaan | Med | Yes | ⭐⭐⭐⭐⭐ | Tim dengan remote sensing background |
+| **Skip If:** Tidak bisa olah data NASA FIRMS / citra satelit |
 
-**Baseline Ladder:**
-1. Naive: last-observed value
-2. Prophet with holiday effects
-3. LightGBM with lag features
-4. TFT + Tabular ensemble
-5. Full pipeline (TFT + Tabular + Text + Calibration)
-
----
-
-#### 📐 Evaluation Strategy
-
-| Metrik | Tujuan |
-|--------|--------|
-| **wMAPE / sMAPE** | Weighted/ symmetric MAPE untuk regresi harga |
-| **PR-AUC** | Untuk spike/no-spike classification |
-| **Recall@Top-K alerts** | Operational — apakah spike tertangkap di K peringkat teratas |
-| **Directional accuracy** | Persentase prediksi arah (naik/turun) yang benar |
-| **Calibration plot** | Reliability diagram untuk spike probability |
-
----
-
-#### 👥 Role Split
-
-| Member | Role |
-|--------|------|
-| **M1 — Data Lead** | Harvest price data pipeline; PIHPS scraping; missing value handling; panel construction |
-| **M2 — Model Lead** | Prophet + LightGBM + TFT; dual-objective; fusion |
-| **M3 — Eval Lead** | Spike detection metrics; calibration; ablation by commodity group; report writing |
-
----
-
-#### 🏆 Why It Wins
-
-1. **Eksekusi paling aman** — data paling bersih (PIHPS), baseline mudah, risiko gagal rendah
-2. **Kelengkapan laporan 19/20** — sangat mungkin untuk membuat laporan yang *complete*
-3. **Kejelasan 19/20** — konsep "memprediksi lonjakan harga" langsung dipahami
-4. **Dual objective** — regression + classification = double validation = looks more rigorous
-5. **Text branch opsional** — kalau mau novelty, tambah news embedding
-
-#### ⚠️ Risiko & Mitigasi
-
-| Risiko | Severity | Mitigasi |
-|--------|:--------:|----------|
-| Terasa "biasa saja" tanpa angle kuat | 🟡 MEDIUM | Tambahkan uncertainty calibration + text branch + "spike risk ranking" framing |
-| Data harga bisa incomplete (beberapa komoditas/region) | 🟡 MEDIUM | Fokus ke 5-10 komoditas strategis + 10 kota besar yang data-nya lengkap |
-| Overlap dengan tim lain | 🟡 MEDIUM | *Differentiator*: multiview + ranking + calibration — kalau tim lain forecast biasa, kamu rank |
-
----
-
-### 🥇 Rank 5: ApiShield-ID
-
-**Score: 91/100** | **Kategori: Lingkungan & Kebencanaan** | **Risiko Eksekusi: Medium**
-
-> **Judul Resmi:**
 > *ApiShield-ID: Prediksi Risiko Kebakaran Hutan/Lahan Berbasis Spatiotemporal Data Mining untuk Prioritas Patroli Desa*
 
----
+#### Problem
 
-#### 🔥 Problem Statement
+Karhutla adalah bencana tahunan di Indonesia dengan kerugian ekonomi dan lingkungan besar. ApiShield-ID menjawab: **"desa mana yang berisiko kebakaran tertinggi dalam 1-7 hari?"** -- ranking prioritas patroli untuk Manggala Agni/BPBD.
 
-Kebakaran hutan dan lahan (karhutla) adalah bencana tahunan di Indonesia yang menyebabkan kerugian ekonomi, kesehatan, dan lingkungan yang sangat besar. Provinsi Riau, Kalimantan, Sumatera Selatan, dan Nusa Tenggara adalah hotspot utama. Upaya pencegahan masih bersifat reaktif — petugas pemadam dikerahkan *setelah* api sudah besar.
+#### Pipeline
 
-ApiShield-ID menjawab: **"desa mana yang memiliki risiko kebakaran tertinggi dalam 1–7 hari ke depan, sehingga patroli dan sosialisasi bisa dilakukan secara proaktif?"**
+| Branch | Model | Purpose |
+|--------|-------|---------|
+| Baseline | LightGBM | Rainfall deficit + hotspot history + humidity + wind |
+| B: Spatiotemporal | ConvLSTM / GRU-D | Grid-based sequence: weather + hotspot 2D field |
+| C: Graph | GraphSAGE | Village adjacency + fire propagation graph |
+| **Fusion** | Weighted ensemble + calibration | Convert multi-score ke calibrated probability |
+| Post-proc | Threshold tuning by region | Threshold berbeda untuk Sumatera vs NTT |
 
-Ini adalah **Top Pick dari Winner Playbook** — data melimpah, multimodal, visual storytelling sangat kuat, dan novelty tinggi.
+Baseline: LightGBM -> ConvLSTM -> GraphSAGE -> **Fusion** | Spatially-validated cross-region
 
----
+#### Rubrik: A:18 | N:19 | M:19 | J:18 | K:17 = **91/100**
 
-#### 📊 Rubrik Scoring Breakdown
+#### Why Choose This
 
-| Keaslian (20) | Kebaruan (20) | Manfaat (20) | Kejelasan (20) | Kelengkapan (20) | **Total** |
-|:-------------:|:-------------:|:------------:|:--------------:|:----------------:|:---------:|
-| 18 | 19 | 19 | 18 | 17 | **91** |
+1. **Data paling melimpah** -- NASA FIRMS real-time + BMKG + Sentinel + OSM
+2. **Visual storytelling paling kuat** -- peta sebaran api sangat powerful untuk presentasi
+3. **Multi-view pipeline** -- tabular + spatiotemporal + graph = winner pattern
 
-| Kriteria | Score | Justifikasi |
-|----------|:-----:|-------------|
-| **Keaslian** | 18/20 | Wildfire prediction sudah ada tapi *village-scale nowcasting + patrol ranking + GNN* masih orisinal. |
-| **Kebaruan** | 19/20 | Kombinasi hotspot (NASA FIRMS), weather, satellite imagery, graph adjacency — strong. |
-| **Manfaat** | 19/20 | Karhutla adalah bencana tahunan yang sangat merugikan. Tapi mungkin tidak se-luas DBD dampaknya. |
-| **Kejelasan** | 18/20 | "Prediksi kebakaran" mudah dipahami. Tapi butuh klarifikasi bahwa outputnya *risk rank*, bukan *fire forecast*. |
-| **Kelengkapan** | 17/20 | Data cukup lengkap. Pipeline multimodal butuh dokumentasi yang rapi. |
+#### Top Risks
 
----
+1. Hotspot labels noisy (false positive industri) -- filter FIRMS confidence >= 80% + validasi BNPB
+2. El Nino anos -> distribution shift -- exclusion period atau domain adaptation
+3. Remote sensing storage besar -- Google Earth Engine preprocessing (free tier cukup)
 
-#### 🗃️ Data & Preprocessing Pipeline
+#### M1: Data Eng (FIRMS ingestion, BMKG+OSM, grid aggregation) | M2: Model (LightGBM, ConvLSTM, GNN) | M3: Eval (spatial CV, calibration, maps visualization, report)
 
-**Data Sources:**
-
-| Data | Sumber | Variabel Kunci |
-|------|--------|----------------|
-| Hotspot aktif real-time | NASA FIRMS (MODIS/VIIRS) | Latitude, longitude, confidence, FRP |
-| Cuaca | BMKG | Curah hujan, kelembaban, suhu, kecepatan angin |
-| Historical fires | BNPB DIBI | Rekaman kebakaran historis per lokasi |
-| Satelit optik | Copernicus Sentinel-2 | NDVI, land cover classification |
-| Exposure layers | OpenStreetMap | Pemukiman, jalan, lahan, sungai |
-
-**Preprocessing Pipeline:**
-1. **Spatial join** — hotspot → grid desa/kecamatan (1 km² atau administrative boundary)
-2. **Rainfall deficit calculation** — SPI (Standardized Precipitation Index) untuk 1, 3, 6 bulan
-3. **Lag features** — hotspot count for 1, 3, 7, 14, 30 days prior
-4. **Land cover aggregation** — proportion of peat, forest, plantation, settlement per grid
-5. **Temporal split** — forward-chaining; kalau bisa exclusion period El Niño
-6. **Class balancing** — positive class (fire) ≈ 1-5% of samples
+[Full detail ->](#appendix-apishield-id)
 
 ---
 
-#### 🧠 Modeling Stack
+### Rank 6: HydroRisk-ID
 
-| Stage | Model | Detail |
-|-------|-------|--------|
-| **Baseline** | LightGBM | Rainfall deficit, hotspot history, humidity, wind |
-| **Branch B: Spatiotemporal** | ConvLSTM / GRU-D / Spatiotemporal Transformer | Grid-based sequence: weather + hotspot 2D field |
-| **Branch C: Graph** | GraphSAGE | Village adjacency + fire propagation graph |
-| **Fusion** | Weighted ensemble + uncertainty calibration | Konversi multi-score ke calibrated probability |
-| **Post-processing** | Threshold tuning by region | Berbeda threshold untuk Sumatera vs NTT |
+| Score | Kategori | Pilar K.B. | Risk | GPU | Data | **Best For:** |
+|:-----:|----------|------------|:----:|:---:|:----:|---------------|
+| 89/100 | Bencana | Kebencanaan | Med | Optional | ⭐⭐⭐⭐ | Tim dengan background kebencanaan |
+| **Skip If:** Ingin topik yang lebih niche / narrower |
 
----
-
-#### 📐 Evaluation Strategy
-
-| Metrik | Tujuan |
-|--------|--------|
-| **PR-AUC** | Primary — karena class imbalance ekstrem |
-| **Recall@Top-K villages** | Operational — apakah api muncul di K desa prioritas |
-| **Lead-time gain** | Berapa hari lebih awal dibanding baseline (e.g., hotspot density threshold) |
-| **Calibration error** | Uncertainty reliability untuk tiap prediksi |
-| **Spatial stress test** | Province-wise evaluation: apakah model generalizes cross-region |
-
----
-
-#### 👥 Role Split
-
-| Member | Role |
-|--------|------|
-| **M1 — Data Lead** | NASA FIRMS ingestion; BMKG + OSM pipeline; grid aggregation; EDA |
-| **M2 — Model Lead** | LightGBM + ConvLSTM + GNN training; hyperparameter tuning |
-| **M3 — Eval Lead** | Spatial cross-validation; ablation; calibration; SHAP; maps visualization; report |
-
----
-
-#### 🏆 Why It Wins
-
-1. **Data melimpah** — NASA FIRMS real-time + BMKG + Sentinel + OSM — sangat kaya
-2. **Visual storytelling kuat** — peta sebaran api sangat powerful untuk juri
-3. **Multi-view pipeline** — tabular + spatiotemporal + graph = winner pattern
-4. **Novelty tinggi** — belum banyak tim GEMASTIK yang menyentuh topik karhutla
-5. **Kalau tidak ada data DBD** (Risiko DengueCast), ApiShield adalah backup paling kuat
-
-#### ⚠️ Risiko & Mitigasi
-
-| Risiko | Severity | Mitigasi |
-|--------|:--------:|----------|
-| Hotspot labels noisy (false positive dari industri/perkebunan) | 🟡 MEDIUM | Filter dengan NASA FIRMS confidence ≥ 80% + validasi BNPB records |
-| El Niño anos — distribution shift | 🟡 MEDIUM | Exclusion period atau domain adaptation: train di normal year, test di El Niño |
-| Remote sensing processing butuh storage | 🟢 LOW | Gunakan Google Earth Engine untuk preprocessing — free tier cukup |
-
----
-
-### 🥈 Rank 6: HydroRisk-ID
-
-**Score: 89/100** | **Kategori: Kebencanaan** | **Risiko Eksekusi: Medium**
-
-> **Judul Resmi:**
 > *HydroRisk-ID: Prediksi Risiko Dampak Banjir dan Longsor untuk Prioritas Kesiapsiagaan Wilayah*
 
----
+#### Problem
 
-#### 🌊 Problem Statement
+Banjir dan longsor adalah bencana paling sering di Indonesia. HydroRisk-ID menjawab: **"district mana yang berisiko banjir/longsor dengan severitas tertentu dalam 3-7 hari?"** -- impact severity ranking untuk evakuasi dan logistik BPBD.
 
-Banjir dan longsor adalah bencana hidrometeorologi paling sering di Indonesia. Setiap musim hujan, BNPB mencatat ratusan kejadian banjir yang berdampak pada ribuan jiwa dan kerugian ekonomi miliaran rupiah. Namun, deteksi dini masih sangat bergantung pada early warning system konvensional yang *threshold-based* dan tidak mengintegrasikan multiple risk factors.
+#### Pipeline
 
-HydroRisk-ID menjawab: **"district/subdistrict mana yang berisiko mengalami banjir/ longsor dengan dampak severitas tertentu dalam 3–7 hari ke depan?"** Bukan sekadar *event prediction*, tapi **impact severity ranking** — sehingga BPBD bisa memprioritaskan evakuasi dan logistik.
+| Branch | Model | Purpose |
+|--------|-------|---------|
+| Baseline | LightGBM | Rainfall + antecedent rainfall + topography proxies |
+| B: Spatial Sequence | ConvLSTM | Gridded weather + terrain sequence |
+| C: Graph | Graph-based exposure | DAS network exposure propagation |
+| **Output** | Event probability + severity class | Flood risk rank |
 
-> **Pembedaan dari ApiShield-ID:** HydroRisk fokus pada banjir+longsor (lebih luas, lebih umum), sementara ApiShield fokus spesifik pada karhutla (lebih niche, lebih narrow).
+Baseline: LightGBM -> ConvLSTM -> Graph exposure -> **Impact severity ranking**
 
----
+#### Rubrik: A:16 | N:17 | M:20 | J:18 | K:18 = **89/100**
 
-#### 📊 Rubrik Scoring
+#### Why Choose This
 
-| Keaslian (20) | Kebaruan (20) | Manfaat (20) | Kejelasan (20) | Kelengkapan (20) | **Total** |
-|:-------------:|:-------------:|:------------:|:--------------:|:----------------:|:---------:|
-| 16 | 17 | 20 | 18 | 18 | **89** |
+1. **Manfaat tertinggi (20/20)** -- banjir/longsor dampak langsung pada keselamatan jiwa
+2. **Data BNPB terstruktur** -- kemudahan preprocessing dibanding topik lain
+3. **Framing impact severity > event prediction** -- lebih operasional untuk BPBD
 
-**Catatan:** Banjir/longsor prediction bukan hal baru. Keaslian & kebaruan medium. Tapi **manfaat 20/20** karena dampak langsung pada keselamatan jiwa. Kelengkapan laporan dinilai mudah karena data BNPB cukup terstruktur.
+#### Top Risks
 
----
+1. Banjir/longsor prediction bukan hal baru -> novelty medium
+2. Label lag dan underreporting -- explicit section di report
+3. Overlap dengan ApiShield (bencana juga) -- beda jenis bencana: hidrometeorologi basah vs kering
 
-#### 🗃️ Data & Preprocessing Pipeline
+#### M1: Data Eng (BNPB, BMKG, DEMNAS, OSM, DAS) | M2: Model (LightGBM, ConvLSTM, Graph) | M3: Eval (PR-AUC, Recall@Top-K, spatial robustness)
 
-**Data Sources:**
-
-| Data | Sumber |
-|------|--------|
-| Banjir/longsor historis (lokasi, tanggal, severity, dampak) | BNPB DIBI |
-| Curah hujan harian, prakiraan 3-7 hari | BMKG |
-| DEM / topography / kemiringan lereng | Copernicus / DEMNAS |
-| Land use, DAS (Daerah Aliran Sungai) | KLHK / Geospatial Bappenas |
-| Populasi, bangunan, infrastruktur vital | BPS + OpenStreetMap |
-
-**Preprocessing:**
-1. **Event aggregation** per subdistrict per day → binary labels + severity multi-class
-2. **Rainfall accumulation** — cumulative rainfall 1, 3, 7 hari
-3. **Topography features** — slope, elevation, distance to river, drainage density
-4. **Exposure weighting** — population × building density per subdistrict
-5. **Temporal split** — forward-chaining, test set: musim hujan terbaru
-6. **Address label lag & underreporting** — explicit section di report
+[Full detail ->](#appendix-hydrorisk-id)
 
 ---
 
-#### 🧠 Modeling Stack
+### Rank 7: PadiWatch-X
 
-| Stage | Model |
-|-------|-------|
-| **Baseline** | LightGBM: rainfall + antecedent rainfall + topography proxies |
-| **Branch B: Spatial Sequence** | ConvLSTM over gridded weather + terrain |
-| **Branch C: Graph Exposure** | Graph-based exposure propagation (DAS network) |
-| **Output** | Event probability + impact severity classification |
+| Score | Kategori | Pilar K.B. | Risk | GPU | Data | **Best For:** |
+|:-----:|----------|------------|:----:|:---:|:----:|---------------|
+| 88/100 | Pertanian | Swasembada Pangan | Med-High | Yes | ⭐⭐⭐⭐ | Tim dengan remote sensing & agrikultur skill |
+| **Skip If:** Tidak familiar crop calendar alignment / NDVI processing |
 
----
-
-#### 📐 Evaluation Strategy
-
-| Metrik | Tujuan |
-|--------|--------|
-| F1 / PR-AUC untuk event occurrence | Detection quality |
-| MAE / SMAPE untuk affected-population estimates | Impact accuracy |
-| Recall@Top-K | Operational — kecukupan prioritas |
-| Spatial robustness | Performance pada unseen provinces |
-
----
-
-### 🥈 Rank 7: PadiWatch-X
-
-**Score: 89/100** | **Kategori: Pangan & Pertanian** | **Risiko Eksekusi: Medium-High**
-
-> **Judul Resmi:**
 > *PadiWatch-X: Prediksi Anomali Hasil Panen Padi Berbasis Multimodal Data Mining untuk Peringatan Dini Ketahanan Pangan*
 
----
+#### Problem
 
-#### 🌾 Problem Statement
+Produksi padi dipengaruhi El Nino/La Nina. Gagal panen di satu provinsi mempengaruhi pasokan nasional dan harga. PadiWatch-X menjawab: **"kabupaten mana yang berisiko anomali hasil panen musim depan?"** -- multimodal fusion iklim + NDVI + produksi historis.
 
-Produksi padi Indonesia sangat dipengaruhi oleh variabilitas iklim — El Niño, La Niña, dan anomali musim tanam. Gagal panen di satu provinsi bisa mempengaruhi pasokan nasional dan harga beras. Sistem peringatan dini yang ada masih menggunakan pendekatan statistik sederhana yang tidak mengintegrasikan citra satelit dan data cuaca multimodal.
+#### Pipeline
 
-PadiWatch-X menjawab: **"kabupaten mana yang berisiko mengalami anomali hasil panen pada musim tanam mendatang?"** dengan memadukan data iklim, citra satelit (NDVI time-series), dan data produksi historis BPS.
+| Branch | Model | Purpose |
+|--------|-------|---------|
+| Baseline | LightGBM | Lagged climate + historic yields |
+| B: Temporal CNN | 1D/3D CNN | NDVI time-series dari Sentinel-2/MODIS |
+| C: Fusion | Multimodal | Tabular features + RS features + district embeddings |
+| **Output** | Yield anomaly class (above/normal/below) | Yield early warning |
 
-**Unik:** Satu-satunya topik yang menggunakan **multimodal fusion (tabular + remote sensing)** — ini sangat kuat untuk kebaruan metode (19/20 potensial). Tapi butuh pengetahuan remote sensing yang tidak dimiliki semua tim.
+Baseline: LightGBM climate-only -> 3D CNN NDVI -> **Multimodal fusion** | Ablation: climate-only vs multimodal
 
----
+#### Rubrik: A:17 | N:18 | M:19 | J:17 | K:18 = **88/100**
 
-#### 📊 Rubrik Scoring
+#### Why Choose This
 
-| Keaslian (20) | Kebaruan (20) | Manfaat (20) | Kejelasan (20) | Kelengkapan (20) | **Total** |
-|:-------------:|:-------------:|:------------:|:--------------:|:----------------:|:---------:|
-| 17 | 18 | 19 | 17 | 18 | **89** |
+1. **Satu-satunya topik multimodal (tabular + RS)** -- novelty kuat di arsitektur pipeline
+2. **Food security = isu strategis nasional** -- relevan dengan swasembada pangan
+3. **Visualisasi NDVI time-series powerful** -- kuat untuk presentasi
 
-**Catatan:** Kebaruan tinggi karena multimodal (tabular + RS). Tapi crop calendar alignment menambah kesulitan eksekusi.
+#### Top Risks
 
----
+1. Crop calendar alignment rumit (berbeda per provinsi) -- harus benar-benar akurat
+2. Butuh remote sensing knowledge yang tidak semua tim punya
+3. Seasonal aggregation membuat jumlah sampel terbatas
 
-#### 🗃️ Data & Preprocessing Pipeline
+#### M1: Data Eng (BPS KSA, BMKG, Sentinel-2/GEE, kalender tanam) | M2: Model (LightGBM, 3D CNN, multimodal fusion) | M3: Eval (yield MAE, directional accuracy, ablation RS)
 
-**Data Sources:**
-
-| Data | Sumber |
-|------|--------|
-| Hasil panen per kabupaten/musim | BPS (Ubinan / KSA) |
-| Climate indices (SPI, NDVI anomaly) | BMKG + Copernicus |
-| Citra satelit NDVI/EVI | Sentinel-2 / MODIS (Google Earth Engine) |
-| Peta lahan sawah | Kementan / Geospatial |
-| Kalender tanam | Kementan (per provinsi, per komoditas) |
-
-**Preprocessing:**
-1. **Seasonal aggregation** — MT1 (Okt-Mar), MT2 (Apr-Sep) atau sesuai kalender lokal
-2. **NDVI temporal profiles** — cloud masking → median composite per 16 hari
-3. **Climate anomaly indices** — SPI 1, 3, 6 bulan; temperature anomaly
-4. **Crop calendar alignment** — PASTI DILAKUKAN dengan benar karena berbeda per provinsi
+[Full detail ->](#appendix-padiwatch-x)
 
 ---
 
-#### 🧠 Modeling Stack
+### Rank 8: EduDrop-ID
 
-| Stage | Model |
-|-------|-------|
-| **Baseline** | LightGBM: lagged climate + historic yields |
-| **Branch B: Temporal CNN** | 1D-CNN atau 3D-CNN over NDVI time-series |
-| **Branch C: Fusion** | Multimodal: tabular features + RS features + district embeddings |
-| **Output** | Yield anomaly class (normal / below / above) atau yield regression |
+| Score | Kategori | Pilar K.B. | Risk | GPU | Data | **Best For:** |
+|:-----:|----------|------------|:----:|:---:|:----:|---------------|
+| 87/100 | Pendidikan | Pendidikan | **Low** | **No** | ⭐⭐⭐⭐ | Tim tanpa GPU, beginner-friendly |
+| **Skip If:** Ingin pipeline deep learning / high novelty |
 
----
-
-#### 📐 Evaluation Strategy
-
-| Metrik | Tujuan |
-|--------|--------|
-| MAE, R² | Regresi yield |
-| Directional accuracy on anomalies | Apakah arah anomali benar (di atas/bawah normal) |
-| Per-province robustness | Generalisasi ke provinsi unseen |
-| Ablation: climate-only vs multimodal | Untuk menunjukkan kontribusi RS |
-
----
-
-### 🥉 Rank 8: EduDrop-ID
-
-**Score: 87/100** | **Kategori: Pendidikan** | **Risiko Eksekusi: Rendah**
-
-> **Judul Resmi:**
 > *EduDrop-ID: Prediksi Risiko Putus Sekolah Berbasis Hierarchical Data Mining untuk Prioritas Intervensi Daerah*
 
----
+#### Problem
 
-#### Problem Statement
+Ribuan siswa putus sekolah setiap tahun di Indonesia, terutama SD/SMP di daerah tertinggal. EduDrop-ID menjawab: **"sekolah dan kecamatan mana yang berisiko putus sekolah tertinggi tahun depan?"** -- ranking prioritas BOS afirmasi dan intervensi Kemendikdasmen.
 
-Angka putus sekolah di Indonesia masih menjadi masalah struktural. Data Kemendikdasmen menunjukkan ribuan siswa putus sekolah setiap tahunnya, terutama di jenjang SD dan SMP di daerah tertinggal. Faktor penyebab bervariasi -- ekonomi keluarga, jarak sekolah, kualitas guru, dan kondisi sosial.
+#### Pipeline
 
-EduDrop-ID menjawab: **"sekolah dan kecamatan mana yang memiliki risiko putus sekolah tertinggi pada tahun ajaran mendatang, sehingga Kemendikdasmen dan Pemda bisa memprioritaskan BOS afirmasi, guru penggerak, dan program retensi?"**
+| Branch | Model | Purpose |
+|--------|-------|---------|
+| A: Tabular | XGBoost / CatBoost | Fitur sekolah + kecamatan; SHAP interpretasi |
+| B: Hierarchical | Mixed Effects Model (LMM) | Random intercept per kabupaten; fixed effects fasilitas |
+| C: Clustering | K-Prototypes | Mixed numerical+categorical profiling tipe sekolah berisiko |
+| **Ensemble** | Weighted avg XGBoost + LMM | Local prediction + group-adjusted prediction |
 
-Pendidikan adalah fondasi **Kemandirian Bangsa** -- tanpa SDM yang terdidik, kemandirian pangan, energi, dan ekonomi sulit dicapai.
+Baseline: Mean dropout per kabupaten -> Logistic Regression -> XGBoost -> XGBoost+LMM -> **Full + Clustering** | Ablations: -hierarchical, -clustering
 
----
+#### Rubrik: A:17 | N:17 | M:20 | J:17 | K:16 = **87/100**
 
-#### Rubrik Scoring Breakdown
+#### Why Choose This
 
-| Keaslian (20) | Kebaruan (20) | Manfaat (20) | Kejelasan (20) | Kelengkapan (20) | **Total** |
-|:-------------:|:-------------:|:------------:|:--------------:|:----------------:|:---------:|
-| 17 | 17 | 20 | 17 | 16 | **87** |
+1. **Risiko eksekusi paling rendah** -- tabular, tanpa GPU, data Dapodik terstruktur
+2. **Manfaat 20/20** -- putus sekolah isu SDM fundamental, dipahami semua orang
+3. **Hierarchical model sebagai diferensiator** -- novelty metodologis vs "prediksi pake XGBoost" biasa
 
-| Kriteria | Score | Justifikasi |
-|----------|:-----:|-------------|
-| **Keaslian** | 17/20 | Student dropout prediction sudah ada, tapi *hierarchical model + school profiling cluster + spatial analysis* untuk konteks Indonesia masih orisinal. |
-| **Kebaruan** | 17/20 | Hierarchical Mixed Effects Model untuk data pendidikan Indonesia belum umum di GEMASTIK. |
-| **Manfaat** | 20/20 | Angka putus sekolah adalah isu SDM fundamental. Dampak langsung pada masa depan bangsa. |
-| **Kejelasan** | 17/20 | Konsep mudah dipahami; tapi perlu klarifikasi bahwa outputnya ranking sekolah, bukan prediksi individu siswa. |
-| **Kelengkapan** | 16/20 | Data Dapodik mungkin perlu pemrosesan administrasi. Tapi setelah dapat, pipeline lurus. |
+#### Top Risks
 
----
+1. Akses data Dapodik butuh pengajuan (40%) -- fallback: data agregat publik Ikhtisar Pendidikan Kemendikdasmen
+2. Data putus sekolah underreported (30%) -- framing sebagai "risk proxy" bukan prediksi absolut
+3. Terlihat seperti dashboard biasa (20%) -- hierarchical + clustering sebagai diferensiator
 
-#### Data & Preprocessing Pipeline
+#### M1: Data Eng (Dapodik, BPS, OSM, feature engineering) | M2: Model (XGBoost, Mixed Effects, K-Prototypes) | M3: Eval (PR-AUC, Recall@Top-K, CV by province, report)
 
-**Data Sources:**
-
-| Data | Sumber Utama | Variabel Kunci | Akses |
-|------|-------------|----------------|-------|
-| Data pokok pendidikan (Dapodik) | Kemendikdasmen | Jml siswa, guru, rombel, putus sekolah per tahun, akreditasi | dapodik.kemdikbud.go.id |
-| Data kemiskinan | BPS | Persentase kemiskinan, PDRB per kapita per kab/kota | bps.go.id |
-| Infrastruktur sekolah | Dapodik + OSM | Fasilitas (listrik, air, toilet), jarak ke kecamatan | dapodik + osm.org |
-| Program bantuan | Puslapdik | Penerima BOS, PIP, KIP per sekolah | Data publik |
-| Ikhtisar Data Pendidikan | Kemendikdasmen | Angka putus sekolah, mengulang, melanjutkan per provinsi | data.kemendikdasmen.go.id |
-
-**Preprocessing Steps:**
-1. **School-level aggregation** -- agregasi data per sekolah per tahun (bukan per siswa)
-2. **Target definition** -- persentase putus sekolah per tahun per sekolah (atau binary: >threshold?)
-3. **Lag features** -- tren putus sekolah 2-3 tahun sebelumnya, delta enrollment, rasio guru/siswa
-4. **Spatial features** -- kecamatan: kemiskinan, akses transportasi, jumlah sekolah alternatif
-5. **Categorical encoding** -- provinsi/kabupaten sebagai hierarchical group
-6. **Train/val/test split** -- temporal: train 2020-2022, val 2023, test 2024
-7. **Imbalance handling** -- mayoritas sekolah punya dropout rendah; fokus ke sekolah risiko tinggi
+[Full detail ->](#appendix-edudrop-id)
 
 ---
 
-#### Modeling Stack
+### Rank 9: WasteWise-ID
 
-| Stage | Model | Detail Arsitektur | Output |
-|-------|-------|-------------------|--------|
-| **Branch A: Tabular** | XGBoost / CatBoost | Fitur sekolah + kecamatan; SHAP untuk interpretasi | Prediksi risiko basal |
-| **Branch B: Hierarchical** | Mixed Effects Model (LMM/GLMM) | Random intercept per kabupaten; fixed effects: fasilitas, ekonomi, rasio guru | Adjusted school risk |
-| **Branch C: Clustering** | K-Prototypes | Mixed numerical+categorical clustering untuk profiling tipe sekolah berisiko | School risk profile |
-| **Ensemble** | Weighted average XGBoost + LMM | Combine local prediction (XGBoost) + group-adjusted prediction (LMM) | Final risk score |
+| Score | Kategori | Pilar K.B. | Risk | GPU | Data | **Best For:** |
+|:-----:|----------|------------|:----:|:---:|:----:|---------------|
+| 86/100 | Lingkungan | Ekonomi Hijau | Med | Optional | ⭐⭐⭐⭐ | Tim dengan interest lingkungan/ekonomi sirkular |
+| **Skip If:** Tidak tertarik waktu optimization routing |
 
-**Baseline Ladder:**
-1. Mean dropout rate per kabupaten (naive)
-2. Logistic Regression with basic features
-3. XGBoost with all features (strong tabular)
-4. XGBoost + Mixed Effects (hierarchical)
-5. XGBoost + Mixed Effects + Clustering profile (**proposed**)
-6. Ablations: -hierarchical, -clustering
-
----
-
-#### Evaluation Strategy
-
-| Metrik | Tujuan |
-|--------|--------|
-| **PR-AUC** | Primary -- kelas putus sekolah adalah minoritas |
-| **Recall@Top-K sekolah** | Operational -- apakah sekolah risiko tinggi tertangkap di K prioritas |
-| **F1-score** | Balanced precision-recall |
-| **RMSE** | Untuk regresi persentase putus sekolah |
-| **Cross-validation by province** | Generalisasi ke provinsi yang tidak ada di training |
-
----
-
-#### Role Split (3 Member)
-
-| Member | Role | Tanggung Jawab Spesifik |
-|--------|------|------------------------|
-| **M1 -- Data Lead** | Data Engineering | Scraping Dapodik + BPS; join; feature engineering; EDA report |
-| **M2 -- Model Lead** | Modeling | XGBoost + Mixed Effects Model + K-Prototypes clustering; ensemble |
-| **M3 -- Eval Lead** | Evaluation & Report | Metric design; ablation; cross-validation by province; technical report |
-
----
-
-#### Why It Wins (GEMASTIK Context)
-
-1. **Pendidikan = fondasi Kemandirian Bangsa** -- SDM unggul adalah syarat kemandirian
-2. **Eksekusi paling aman** -- data Dapodik terstruktur, tidak perlu GPU, pipeline sederhana
-3. **Manfaat 20/20** -- putus sekolah adalah isu yang dipahami semua orang
-4. **Hierarchical model** -- novelty metodologis yang cukup untuk membedakan dari sekedar "prediksi pake XGBoost"
-5. **Risiko paling rendah** -- kemungkinan gagal eksekusi sangat kecil
-
-#### Risiko & Mitigasi
-
-| Risiko | Severity | Probabilitas | Mitigasi |
-|--------|:--------:|:------------:|----------|
-| Akses data Dapodik tingkat sekolah butuh pengajuan | MEDIUM | 40% | Gunakan data agregat publik dari Ikhtisar Data Pendidikan Kemendikdasmen; atau data BPS |
-| Data putus sekolah underreported | MEDIUM | 30% | Framing sebagai "risiko proxy" bukan "prediksi absolut"; validasi dengan data kemiskinan BPS |
-| Terlihat seperti dashboard biasa | MEDIUM | 20% | Framing kuat sebagai risk prediction system; hierarchical + clustering sebagai diferensiator |
-
----
-
-### 🥉 Rank 9: WasteWise-ID
-
-**Score: 86/100** | **Kategori: Ekonomi Hijau** | **Risiko Eksekusi: Medium**
-
-> **Judul Resmi:**
 > *WasteWise-ID: Prediksi Timbulan Sampah Berbasis Spatiotemporal Data Mining untuk Optimasi Rantai Pengelolaan Sampah*
 
----
+#### Problem
 
-#### Problem Statement
+Indonesia penghasil sampah terbesar ke-2 dunia (65 ton/tahun). Pengelolaan masih reaktif. WasteWise-ID menjawab: **"kecamatan mana yang akan alami lonjakan timbulan sampah dalam 1-7 hari?"** -- rekomendasi alokasi armada dan TPS 3R untuk DLH.
 
-Indonesia adalah penghasil sampah terbesar kedua di dunia setelah China. Timbulan sampah nasional mencapai 65 juta ton/tahun dan diperkirakan terus meningkat. Namun, sistem pengelolaan sampah masih bersifat reaktif -- armada dijadwalkan secara merata, tidak berdasarkan prediksi timbulan per wilayah.
+#### Pipeline
 
-WasteWise-ID menjawab: **"kecamatan mana yang akan mengalami lonjakan timbulan sampah dalam 1-7 hari ke depan, sehingga Dinas Lingkungan Hidup bisa mengalokasikan armada dan TPS 3R secara optimal?"**
+| Branch | Model | Purpose |
+|--------|-------|---------|
+| A: Temporal | N-BEATS / TiDE | SOTA time-series forecasting untuk waste per wilayah |
+| B: Tabular | LightGBM | Demografi + cuaca + holiday + lag features |
+| C: Graph | GraphSAGE | Spillover kecamatan berdekatan |
+| **Optimization** | Integer Linear Programming | Route recommendation based on waste forecast |
 
-Topik ini menyentuh pilar **Ekonomi Hijau** (Kemandirian Bangsa) -- pengelolaan sampah yang efisien mengurangi emisi, meningkatkan daur ulang, dan menciptakan nilai ekonomi sirkular.
+Baseline: Mean seasonal -> SARIMA/Prophet -> LightGBM -> N-BEATS -> **Full + routing** | Ablations: -graph, -N-BEATS
 
----
+#### Rubrik: A:17 | N:18 | M:18 | J:17 | K:16 = **86/100**
 
-#### Rubrik Scoring Breakdown
+#### Why Choose This
 
-| Keaslian (20) | Kebaruan (20) | Manfaat (20) | Kejelasan (20) | Kelengkapan (20) | **Total** |
-|:-------------:|:-------------:|:------------:|:--------------:|:----------------:|:---------:|
-| 17 | 18 | 18 | 17 | 16 | **86** |
+1. **Ekonomi Hijau = pilar Kemandirian Bangsa untouched** -- belum ada tim GEMASTIK di topik sampah
+2. **Data SIPSN publik gratis** -- langsung dari KLHK tanpa scraping
+3. **N-BEATS + optimization layer** -- diferensiator: prediksi + rekomendasi operasional
 
-| Kriteria | Score | Justifikasi |
-|----------|:-----:|-------------|
-| **Keaslian** | 17/20 | Waste prediction sudah ada tapi *spatiotemporal + multi-source fusion (SIPSN + demografi + cuaca)* untuk Indonesia masih orisinal. |
-| **Kebaruan** | 18/20 | N-BEATS + GNN + optimization layer untuk waste management di Indonesia belum ada di GEMASTIK. |
-| **Manfaat** | 18/20 | Relevan dengan masalah sampah nasional, tapi benefit operasional (penghematan BBM armada) tidak sedramatis kesehatan. |
-| **Kejelasan** | 17/20 | Konsep mudah dipahami; tapi butuh klarifikasi bahwa outputnya adalah prediksi timbulan, bukan audit sampah. |
-| **Kelengkapan** | 16/20 | Data SIPSN tersedia tapi tidak semua kabupaten update rutin. Validasi memerlukan domain knowledge. |
+#### Top Risks
 
----
+1. Data SIPSN tidak semua kabupaten update (40%) -- fokus ke 10 kota besar dengan data paling rajin
+2. Optimization layer terlalu berat untuk scope GEMASTIK -- bisa opsional, cukup simulasi
+3. Timbulan sampah dipengaruhi faktor lokal acak -- framing sebagai risk estimation, bukan exact prediction
 
-#### Data & Preprocessing Pipeline
+#### M1: Data Eng (SIPSN, BMKG, BPS, OSM TPS/TPA) | M2: Model (N-BEATS, LightGBM, GNN, ILP routing) | M3: Eval (MAE, peak detection, cost saving simulation, report)
 
-**Data Sources:**
-
-| Data | Sumber Utama | Variabel Kunci | Akses |
-|------|-------------|----------------|-------|
-| Timbulan sampah historis | SIPSN KLHK | Tonase per hari per kab/kota | sipsn.menlhk.go.id |
-| Demografi & kepadatan | BPS | Jumlah penduduk, kepadatan, PDRB | bps.go.id |
-| Data cuaca | BMKG | Curah hujan, suhu (mempengaruhi timbulan sampah basah) | iklim.bmkg.go.id |
-| Hari libur & event | Kemenko PMK | Libur nasional, hari besar, event kota | Data publik |
-| TPS/TPA location | OpenStreetMap | Lokasi TPS, TPA, jarak, kapasitas | osm.org |
-
-**Preprocessing Steps:**
-1. **Daily aggregation** -- tonase sampah per kecamatan per hari
-2. **Holiday feature** -- binary flags: hari libur, hari pasar, event kota
-3. **Weather features** -- curah hujan kumulatif 1, 3, 7 hari; suhu rata-rata
-4. **Lag features** -- timbulan 1, 2, 3, 7 hari sebelumnya
-5. **Population normalization** -- tonase per 1000 penduduk untuk perbandingan antar wilayah
-6. **Spatial adjacency** -- graph kecamatan untuk spillover antar wilayah
-7. **Train/val/test split** -- temporal walk-forward
+[Full detail ->](#appendix-wastewise-id)
 
 ---
 
-#### Modeling Stack
+### Rank 10: GempaRank-X
 
-| Stage | Model | Detail Arsitektur | Output |
-|-------|-------|-------------------|--------|
-| **Branch A: Temporal** | N-BEATS / TiDE | Pure time-series forecasting; state-of-the-art untuk univariat | Waste forecast per wilayah |
-| **Branch B: Tabular** | LightGBM | Fitur demografi + cuaca + holiday + lag | Feature-driven prediction |
-| **Branch C: Graph** | GNN (GraphSAGE) | Spillover antar kecamatan yang berdekatan | Spatial adjustment |
-| **Optimization** | Integer Linear Programming | Rute armada berdasarkan prediksi timbulan | Rekomendasi jadwal & rute |
+| Score | Kategori | Pilar K.B. | Risk | GPU | Data | **Best For:** |
+|:-----:|----------|------------|:----:|:---:|:----:|---------------|
+| 86/100 | Bencana | Kebencanaan | Med | **No** | ⭐⭐⭐ | Tim tanpa GPU, interest kebencanaan |
+| **Skip If:** Ingin pre-event prediction (ini post-event nowcasting) |
 
-**Baseline Ladder:**
-1. Mean per hari (seasonal naive)
-2. SARIMA / Prophet (time-series)
-3. LightGBM with all features (tabular)
-4. N-BEATS (deep sequence)
-5. LightGBM + N-BEATS + GNN + routing (**proposed**)
-6. Ablations: -graph, -N-BEATS
-
----
-
-#### Evaluation Strategy
-
-| Metrik | Tujuan |
-|--------|--------|
-| **MAE / RMSE** | Primary -- error prediksi tonase |
-| **MAPE** | Persentase error |
-| **Saving estimation** | Simulasi penghematan: berapa perjalanan armada bisa dihemat |
-| **Peak detection** | Akurasi deteksi lonjakan sampah (hari libur/event) |
-
----
-
-#### Role Split (3 Member)
-
-| Member | Role | Tanggung Jawab Spesifik |
-|--------|------|------------------------|
-| **M1 -- Data Lead** | Data Engineering | SIPSN scraping; weather join; EDA; spatial graph construction |
-| **M2 -- Model Lead** | Modeling | N-BEATS + LightGBM + GNN; optimization layer; hyperparameter tuning |
-| **M3 -- Eval Lead** | Evaluation & Report | Metrics; peak detection; cost saving simulation; technical report |
-
----
-
-#### Why It Wins (GEMASTIK Context)
-
-1. **Ekonomi Hijau sebagai pilar Kemandirian Bangsa** -- belum ada tim GEMASTIK di topik sampah
-2. **Data SIPSN publik dan gratis** -- tersedia langsung dari KLHK
-3. **N-BEATS (state-of-the-art time series)** -- lebih baru dari Prophet/SARIMA yang biasa dipakai
-4. **Optimization layer** -- diferensiator: bukan hanya prediksi tapi juga rekomendasi operasional
-5. **Dampak langsung** -- penghematan BBM, pengurangan emisi, efisiensi anggaran daerah
-
-#### Risiko & Mitigasi
-
-| Risiko | Severity | Probabilitas | Mitigasi |
-|--------|:--------:|:------------:|----------|
-| Data SIPSN tidak semua kabupaten update | MEDIUM | 40% | Fokus ke 10 kota besar dengan data SIPSN paling rajin update; atau gunakan data dinas kebersihan kota |
-| Output optimization terlalu berat untuk GEMASTIK | MEDIUM | 30% | Optimization layer bisa opsional; cukup tunjukkan sebagai "extended work" atau simulasi |
-| Timbulan sampah dipengaruhi faktor lokal acak | LOW | 20% | Akui keterbatasan di report; framing sebagai risk estimation bukan exact prediction |
-
----
-
-### 🥉 Rank 10: GempaRank-X
-
-**Score: 86/100** | **Kategori: Kebencanaan** | **Risiko Eksekusi: Medium**
-
-> **Judul Resmi:**
 > *GempaRank-X: Ranking Dampak Gempa Bumi Berbasis Data Mining untuk Prioritas Respons Darurat*
 
----
+#### Problem
 
-#### 🌍 Problem Statement
+Indonesia di Ring of Fire. Saat gempa terjadi, 1 jam pertama kritis. GempaRank-X menjawab: **"daerah mana yang paling terdampak? fasilitas kritis mana diprioritaskan?"** -- impact ranking system untuk SAR/BPBD/Kemenkes.
 
-Indonesia berada di Ring of Fire — gempa bumi besar terjadi setiap beberapa tahun. Saat gempa terjadi, pertanyaan kritis dalam 1 jam pertama adalah: **"daerah mana yang paling terdampak? fasilitas kritis mana yang perlu diprioritaskan?"** Tim SAR, BPBD, dan Kemenkes butuh informasi ini dalam hitungan menit.
+#### Pipeline
 
-GempaRank-X bukan "prediksi gempa" (itu impossible dengan teknologi saat ini). Melainkan: **segera setelah gempa terjadi, sistem ini meranking daerah dan aset kritis berdasarkan risiko dampak** — menggunakan magnitudo, kedalaman, lokasi, exposure bangunan, dan kerentanan populasi.
+| Branch | Model | Purpose |
+|--------|-------|---------|
+| Baseline | Rule-based impact index | f(magnitudo, depth, exposure proxies) |
+| B: Tabular | LightGBM / XGBoost | Gempa features + exposure -> damage prediction |
+| C: Graph + Travel | GNN + Dijkstra | District connectivity + travel time to hospitals |
+| **Output** | Impact rank + uncertainty | Critical asset priority list |
 
-**Catatan:** Karena sifatnya *post-event nowcasting* bukan *pre-event prediction*, ini secara teknis berbeda dari topik forecasting di atas. Tapi untuk GEMASTIK, framing "impact ranking system" masih sangat sah sebagai data mining — selama problem formulation-nya jelas.
+Baseline: Rule-based -> LightGBM -> **GNN + Travel-time** | Scenario backtests on historical earthquakes
 
----
+#### Rubrik: A:17 | N:17 | M:19 | J:16 | K:17 = **86/100**
 
-#### 📊 Rubrik Scoring
+#### Why Choose This
 
-| Keaslian (20) | Kebaruan (20) | Manfaat (20) | Kejelasan (20) | Kelengkapan (20) | **Total** |
-|:-------------:|:-------------:|:------------:|:--------------:|:----------------:|:---------:|
-| 17 | 17 | 19 | 16 | 17 | **86** |
+1. **Compute paling rendah** -- bisa dikerjakan tanpa GPU sama sekali
+2. **Post-event nowcasting** -- berbeda dari topik forecasting lain (diversifikasi portfolio tim)
+3. **Manfaat darurat tinggi** -- ranking dampak dalam 1 jam pertama sangat operasional
 
-**Catatan:** Compute paling rendah di antara semua topik — bisa dikerjakan tanpa GPU. Namun label scarcity (gempa besar jarang) jadi tantangan untuk buktikan robustness.
+#### Top Risks
 
----
+1. Label scarcity (gempa besar jarang) -- scenario backtests pada historical earthquakes
+2. Bukan pre-event prediction, framing harus hati-hati -- "impact ranking" bukan "prediksi gempa"
+3. Data damage reports sering underreported -- acknowledge limitations di report
 
-#### 🗃️ Data & Preprocessing Pipeline
+#### M1: Data Eng (BMKG catalog, BNPB DIBI, OSM, BPS) | M2: Model (LightGBM, GNN, travel-time algorithm) | M3: Eval (NDCG@K, scenario backtests, ablation)
 
-**Data Sources:**
-
-| Data | Sumber |
-|------|--------|
-| Katalog gempa (magnitudo, kedalaman, lokasi, waktu) | BMKG |
-| Historical damage reports | BNPB DIBI |
-| Buildings, roads, health facilities | OpenStreetMap |
-| Populasi per desa/kecamatan | BPS |
-| Topografi / soil type (liquefaction risk) | Copernicus / DEMNAS |
-
-**Preprocessing:**
-1. **Define impact target** — affected population, building damage proxy, or multi-class severity
-2. **Exposure layer construction** — building count, road network density, facility count per district
-3. **Graph** — district connectivity + travel time to hospitals
-4. **Scenario backtests** — simulate historical earthquakes dan compare predicted impact vs actual reports
+[Full detail ->](#appendix-gemparank-x)
 
 ---
 
-#### 🧠 Modeling Stack
+### Rank 11: JudolFlow-X
 
-| Stage | Model |
-|-------|-------|
-| **Baseline** | Rule-based impact index = f(magnitudo, depth, exposure proxies) |
-| **Branch B: Tabular** | LightGBM/XGBoost: fitur gempa + exposure → predicted damage severity |
-| **Branch C: Graph + Travel Time** | GNN over district graph + Dijkstra travel time to facilities |
-| **Output** | Impact rank per district + uncertainty bands + critical asset priority |
+| Score | Kategori | Pilar K.B. | Risk | GPU | Data | **Best For:** |
+|:-----:|----------|------------|:----:|:---:|:----:|---------------|
+| 84/100 | Cyber | Keamanan Digital | **High** | Optional | ⭐⭐⭐ | Tim expert NLP & graph, berani risk |
+| **Skip If:** Tidak ada experience dengan scraping etis / pipeline multi-stage |
 
----
-
-#### 📐 Evaluation Strategy
-
-| Metrik | Tujuan |
-|--------|--------|
-| NDCG@K, Recall@Top-K | Ranking quality of impacted districts |
-| MAE on affected population | Impact magnitude accuracy |
-| Scenario backtests | On historical earthquake events |
-| Ablation | Rule-based vs learned, with/without graph component |
-
----
-
-### 🥉 Rank 11: JudolFlow-X
-
-**Score: 87/100** | **Kategori: Cyber/Keamanan Digital** | **Risiko Eksekusi: Tinggi**
-
-> **Judul Resmi:**
 > *JudolFlow-X: Deteksi dan Klasterisasi Ekosistem Promosi Judi Online Berbasis NLP, Retrieval-Reranking, dan Graph Mining*
 
----
+#### Problem
 
-#### 🎰 Problem Statement
+Judol adalah epidemi digital di Indonesia. Promosi menyebar via komentar media sosial, Telegram, QRIS. JudolFlow-X menjawab: **"bagaimana mendeteksi dan mengelompokkan jaringan promosi judi online?"** -- pipeline 6-stage retrieval + classifier + reranker + graph mining.
 
-Perjudian online (judol) telah menjadi epidemi digital di Indonesia. Promosi judol menyebar melalui komentar media sosial, Telegram, WhatsApp, website, dan QRIS. Penegakan hukum sulit karena pelaku menggunakan akun-akun siluman, domain berganti, dan pembayaran menggunakan rekening temporer.
+#### Pipeline
 
-JudolFlow-X menjawab: **"bagaimana mendeteksi dan mengelompokkan jaringan promosi judi online secara otomatis berdasarkan teks, URL, entity linkage, dan pola graf?"**
+| Stage | Technique | Purpose |
+|-------|-----------|---------|
+| 1. Retrieval | Qwen3 / BGE-M3 | Cari konten semantik mirip contoh judol |
+| 2. Classification | IndoBERT / LightGBM | Classify konten sebagai judol/non-judol |
+| 3. Reranking | CrossEncoder | Improve precision pada borderline samples |
+| 4. Entity Extraction | Regex + NER | Domain, handle, phone, QRIS alias |
+| 5. Graph Mining | Hetero GNN / Community | Cluster detection + link prediction |
+| 6. Hard-mining | Active learning loop | FP/FN -> relabel -> retrain |
 
-**Ini yang paling "latest-tech"** — retrieval + reranker + GNN + hard-example mining. Tapi juga yang **paling riskan** — data ethics, labeling, dan evaluation bisa messy.
+Baseline: Keyword rule-based -> Classifier -> **Full pipeline** | Fusion: text + entity + graph + novelty risk scores
 
----
+#### Rubrik: A:19 | N:20 | M:18 | J:15 | K:15 = **84/100**
 
-#### 📊 Rubrik Scoring
+#### Why Choose This
 
-| Keaslian (20) | Kebaruan (20) | Manfaat (20) | Kejelasan (20) | Kelengkapan (20) | **Total** |
-|:-------------:|:-------------:|:------------:|:--------------:|:----------------:|:---------:|
-| 19 | 20 | 18 | 15 | 15 | **87** |
+1. **Tech wow factor tertinggi** -- terlihat seperti mini KDD paper
+2. **Kebaruan 20/20** -- retrieval + reranker + GNN sangat jarang di GEMASTIK
+3. **Isu nasional hot** -- judol adalah topik yang sangat visible
 
-| Kriteria | Score | Justifikasi |
-|----------|:-----:|-------------|
-| **Keaslian** | 19/20 | Sangat distinctive — jarang ada tim GEMASTIK yang berani ambil topik sekompleks ini. |
-| **Kebaruan** | 20/20 | BGE-M3, Qwen3 Embedding, CrossEncoder, Heterogeneous GNN — semua latest ingredient. |
-| **Manfaat** | 18/20 | Judol isu nasional yang sangat hot. Tapi benefit lebih bersifat penegakan hukum, bukan dampak langsung ke publik seperti DBD. |
-| **Kejelasan** | 15/20 | Pipeline 6 stage sulit dijelaskan secara ringkas. Butuh effort besar untuk bikin laporan yang jelas. |
-| **Kelengkapan** | 15/20 | Labeling, graph construction, evaluation — semua bisa messy dan incomplete. |
+#### Top Risks
 
----
+1. Data ethics & legal (HIGH) -- hanya data publik; hindari data pribadi; ethics section wajib
+2. Labeling quality (HIGH) -- weak supervision + 200-500 human validated samples
+3. Pipeline 6-stage complexity (HIGH) -- mulai dengan 3 stage, tambah reranker & hard-mining jika waktu cukup
 
-#### 🗃️ Data & Preprocessing Pipeline
+#### M1: Data Eng (scraping, preprocessing, entity extraction, weak labeling) | M2: Model (embeddings, classifier, reranker, LLM) | M3: Graph & Eval (graph construction, community detection, metrics, report)
 
-**Data Sources:**
-
-| Data | Sumber | Keterangan |
-|------|--------|------------|
-| Comments/posts | Scraping terbatas platform publik | Etika: hanya dari platform publik |
-| URLs | Ekstraksi dari komentar | Deteksi domain judi known list |
-| Telegram handles | Regex dari teks | Identifikasi channel/akun |
-| QRIS / payment aliases | OCR + regex | Dari gambar screenshot (optional) |
-| Public blocklists | Open-source intelligence (OSINT) | Daftar domain/akun terindikasi |
-
-**Preprocessing:**
-1. Slang normalization — "gacor", "maxwin", "bonanza" → canonical terms
-2. URL canonicalization — resolve shortlinks
-3. Entity extraction — domain, handle, phone, payment alias
-4. Graph construction — nodes: user, domain, handle, QRIS alias; edges: co-occurrence, referral, payment link
-5. Weak labeling — rule-based label dari keyword matches + OSINT lists → diperiksa manual sample
-
----
-
-#### 🧠 Modeling Stack (6 Stage)
-
-| Stage | Teknik | Detail |
-|-------|--------|--------|
-| **1. Retrieval** | Qwen3 Embedding / BGE-M3 | Cari konten semantik mirip dengan contoh judol |
-| **2. Classification** | Fine-tuned IndoBERT / LightGBM | Classify konten sebagai judol / non-judol |
-| **3. Reranking** | CrossEncoder | Improve precision pada borderline samples |
-| **4. Entity Extraction** | Regex + NER (Qwen3) | Domain, handle, phone, QRIS alias |
-| **5. Graph Mining** | Heterogeneous GNN / Community Detection | Cluster detection, link prediction, anomaly scoring |
-| **6. Hard-example Mining** | Active learning loop | False positives/negatives → relabel → retrain |
-
-**Fusion:** Text risk + entity risk + graph-centrality risk + community risk + novelty score → final risk score.
-
----
-
-#### 📐 Evaluation Strategy
-
-| Metrik | Tujuan |
-|--------|--------|
-| Macro F1 | For suspicious content classification |
-| PR-AUC | Imbalanced label |
-| Entity extraction F1 | Precision/recall per entity type |
-| Cluster purity / NMI | Graph clustering quality |
-| Precision@K | For suspicious cluster ranking |
-| Case study | Qualitative evaluation on top clusters |
-
----
-
-#### 👥 Role Split
-
-| Member | Role |
-|--------|------|
-| **M1 — Data Lead** | Scraping + preprocessing + entity extraction + weak labeling |
-| **M2 — Model Lead** | Embeddings + classifier + reranker + LLM prompting |
-| **M3 — Graph Lead** | Graph construction + community detection + evaluation + report |
-
----
-
-#### 🏆 Why It Wins (If Executed Well)
-
-1. **Tech wow factor tertinggi** — terlihat seperti mini KDD paper
-2. **Kebaruan metode 20/20** — sangat jarang ada tim GEMASTIK yang pakai retrieval + reranker + GNN
-3. **Social impact kuat** — judol adalah isu nasional yang sangat visible
-4. **Multi-stage pipeline** — persis seperti pola pemenang internasional (OAG AQA, Meta KDD)
-
-#### ⚠️ Risiko & Mitigasi
-
-| Risiko | Severity | Mitigasi |
-|--------|:--------:|----------|
-| Data ethics & legal (scraping) | 🔴 HIGH | Hanya gunakan data publik; hindari data pribadi; konsultasi dosen; explicit ethics section |
-| Labeling quality | 🔴 HIGH | Weak supervision + human validation untuk 200-500 samples; bootstrapping |
-| Pipeline complexity | 🔴 HIGH | Mulai dengan 3 stage (classifier → entity → graph), tambah reranker & hard-mining jika waktu cukup |
-| Evaluation messy | 🟡 MEDIUM | Clear metric hierarchy; case-study evaluation wajib |
+[Full detail ->](#appendix-judolflow-x)
 
 ---
 
 ### Rank 12: AirGuard Sekolah
 
-**Score: 85/100** | **Kategori: Lingkungan & Kesehatan** | **Risiko Eksekusi: Rendah**
+| Score | Kategori | Pilar K.B. | Risk | GPU | Data | **Best For:** |
+|:-----:|----------|------------|:----:|:---:|:----:|---------------|
+| 84/100 | Lingkungan | Kesehatan Publik | **Low** | **No** | ⭐⭐⭐ | Tim pemula, butuh topik paling aman |
+| **Skip If:** Ingin novelty tinggi / impact besar |
 
-> **Judul Resmi:**
 > *AirGuard Sekolah: Prediksi Risiko Paparan PM2.5 Jam Sekolah Berbasis Data Mining*
 
----
+#### Problem
 
-#### 🏫 Problem Statement
+Polusi PM2.5 di kota besar Indonesia mengkhawatirkan. Anak sekolah paling rentan (6-8 jam di sekolah). AirGuard menjawab: **"hari & sekolah mana yang berisiko paparan PM2.5 tertinggi?"** -- rekomendasi work-from-school/masker/air purifier untuk sekolah.
 
-Polusi udara (PM2.5) di kota-kota besar Indonesia — terutama Jakarta, Bandung, Surabaya — telah mencapai level yang mengkhawatirkan. Anak sekolah adalah kelompok paling rentan karena menghabiskan 6-8 jam di sekolah saat jam polusi puncak.
+#### Pipeline
 
-AirGuard Sekolah menjawab: **"hari apa dan sekolah mana yang memiliki risiko paparan PM2.5 tertinggi, sehingga bisa merekomendasikan work-from-school, masker, atau pemasangan air purifier?"**
+| Branch | Model | Purpose |
+|--------|-------|---------|
+| Baseline | Prophet | PM2.5 time-series + holiday effects |
+| A: Tabular | LightGBM | Meteorological features + lag + location |
+| B: Temporal | LSTM | Sequence forecasting PM2.5 |
+| **Output** | School-day risk alert | PM2.5 exposure level + recommendation |
 
-**Topik paling aman** — data dari OpenAQ mudah didapat, compute rendah, mudah ditulis. Tapi:
+Baseline: Mean -> Prophet -> LightGBM -> LSTM -> **Alert system**
 
-#### 📊 Rubrik Scoring
+#### Rubrik: A:16 | N:16 | M:18 | J:18 | K:17 = **84/100**
 
-| Keaslian (20) | Kebaruan (20) | Manfaat (20) | Kejelasan (20) | Kelengkapan (20) | **Total** |
-|:-------------:|:-------------:|:------------:|:--------------:|:----------------:|:---------:|
-| 16 | 16 | 18 | 18 | 17 | **85** |
+#### Why Choose This
 
-**Kelemahan:** Belum ada yang *baru* — PM2.5 forecasting sudah sangat umum. Kebaruan hanya dari *school-hour exposure framing*.
+1. **Eksekusi paling aman dari semua topik** -- data OpenAQ gratis, compute rendah, mudah ditulis
+2. **Cocok untuk tim pemula** -- tanpa GPU, tanpa remote sensing, tanpa scraping
+3. **Framing school-hour exposure** -- diferensiator dari prediksi PM2.5 biasa
 
----
+#### Top Risks
 
-## 4. Comparison Matrix & Trade-offs
+1. PM2.5 forecasting sudah sangat umum -- novelty hanya dari school-hour framing
+2. Data sensor terbatas di kota besar saja -- coverage hanya Jakarta, Bandung, Surabaya
+3. Bisa terlihat seperti dashboard biasa -- pastikan ada supervised prediction component
 
-### 4.1 Quick Reference — Semua Topik
+#### M1: Data Eng (OpenAQ, BMKG, OSM sekolah) | M2: Model (Prophet, LightGBM, LSTM) | M3: Eval (PM2.5 MAE, alert precision, report)
 
-| Rank | Topik | Score | Data Avail. | Exec. Risk | Compute | Novelty | Visual Story |
-|:----:|-------|:-----:|:-----------:|:----------:|:-------:|:-------:|:------------:|
-| 1 | **WaterWatch-ID** | **90** | ⭐⭐⭐⭐ | Medium | Moderate-High | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐ |
-| 2 | DengueCast-X | 91 | ⭐⭐⭐⭐ | Medium | Moderate | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐ |
-| 3 | **TraceFish-ID** | **91** | ⭐⭐⭐⭐ | Medium-High | Moderate | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐⭐ |
-| 4 | PanganShock-X | 91 | ⭐⭐⭐⭐⭐ | **Low** | Low | ⭐⭐⭐ | ⭐⭐⭐ |
-| 5 | ApiShield-ID | 91 | ⭐⭐⭐⭐⭐ | Medium | Moderate | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐⭐ |
-| 6 | HydroRisk-ID | 89 | ⭐⭐⭐⭐ | Medium | Moderate | ⭐⭐⭐ | ⭐⭐⭐⭐ |
-| 7 | PadiWatch-X | 88 | ⭐⭐⭐⭐ | Med-High | Mod-High | ⭐⭐⭐⭐ | ⭐⭐⭐⭐ |
-| 8 | **EduDrop-ID** | **87** | ⭐⭐⭐⭐ | **Low** | **Low** | ⭐⭐⭐⭐ | ⭐⭐⭐ |
-| 9 | **WasteWise-ID** | **86** | ⭐⭐⭐⭐ | Medium | Low-Mod | ⭐⭐⭐⭐ | ⭐⭐⭐ |
-| 10 | GempaRank-X | 86 | ⭐⭐⭐ | Medium | **Low** | ⭐⭐⭐⭐ | ⭐⭐⭐ |
-| 11 | JudolFlow-X | 84 | ⭐⭐⭐ | **High** | Moderate | ⭐⭐⭐⭐⭐ | ⭐⭐⭐ |
-| 12 | AirGuard Sekolah | 84 | ⭐⭐⭐ | **Low** | **Low** | ⭐⭐ | ⭐⭐⭐ |
+[Full detail ->](#appendix-airguard-sekolah)
 
-### 4.2 Key Trade-offs
+## 6. Comparison Matrix & Trade-offs
+
+### 6.1 Quick Reference -- Semua Topik
+
+| Rank | Topik | Score | Pilar K.B. | Risk | GPU | Data | Novelty | Story | Compute |
+|:----:|-------|:-----:|------------|:----:|:---:|:----:|:-------:|:-----:|:-------:|
+| 1 | **WaterWatch-ID** | **90** | Swasembada Air | Med | Yes | ⭐⭐⭐⭐ | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐ | Mod-High |
+| 2 | DengueCast-X | 91 | Kesehatan | Med | Yes | ⭐⭐⭐⭐ | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐ | Moderate |
+| 3 | **TraceFish-ID** | **91** | Ekonomi Biru | Med-High | Yes | ⭐⭐⭐⭐ | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐⭐ | Moderate |
+| 4 | PanganShock-X | 91 | Swasembada Pangan | **Low** | Opt | ⭐⭐⭐⭐⭐ | ⭐⭐⭐ | ⭐⭐⭐ | **Low** |
+| 5 | ApiShield-ID | 91 | Kebencanaan | Med | Yes | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐⭐ | Moderate |
+| 6 | HydroRisk-ID | 89 | Kebencanaan | Med | Opt | ⭐⭐⭐⭐ | ⭐⭐⭐ | ⭐⭐⭐⭐ | Moderate |
+| 7 | PadiWatch-X | 88 | Swasembada Pangan | Med-High | Yes | ⭐⭐⭐⭐ | ⭐⭐⭐⭐ | ⭐⭐⭐⭐ | Mod-High |
+| 8 | **EduDrop-ID** | **87** | Pendidikan | **Low** | **No** | ⭐⭐⭐⭐ | ⭐⭐⭐⭐ | ⭐⭐⭐ | **Low** |
+| 9 | **WasteWise-ID** | **86** | Ekonomi Hijau | Med | Opt | ⭐⭐⭐⭐ | ⭐⭐⭐⭐ | ⭐⭐⭐ | Low-Mod |
+| 10 | GempaRank-X | 86 | Kebencanaan | Med | **No** | ⭐⭐⭐ | ⭐⭐⭐⭐ | ⭐⭐⭐ | **Low** |
+| 11 | JudolFlow-X | 84 | Keamanan Digital | **High** | Opt | ⭐⭐⭐ | ⭐⭐⭐⭐⭐ | ⭐⭐⭐ | Moderate |
+| 12 | AirGuard | 84 | Kesehatan | **Low** | **No** | ⭐⭐⭐ | ⭐⭐ | ⭐⭐⭐ | **Low** |
+
+### 6.2 Key Trade-offs
 
 | Topik | Main Strength | Main Risk |
 |-------|--------------|-----------|
-| **WaterWatch-ID** | Multi-modal pipeline (TFT+GAT+ViT); Swasembada Air pillar | Data monitoring KLHK sparse secara temporal |
-| **DengueCast-X** | Best balance of impact + novelty + feasibility | Data DBD kabupaten availability varies |
-| **TraceFish-ID** | Ekonomi Biru untouched; novelty tertinggi | Label IUU tidak ada (unsupervised problem) |
-| **PanganShock-X** | Termudah dieksekusi, laporan termudah ditulis | Bisa terasa biasa tanpa angle kuat |
-| **ApiShield-ID** | Data paling melimpah (NASA FIRMS!), story kuat | Hotspot labels noisy |
-| **PadiWatch-X** | Multimodal (tabular + RS), food security | Crop calendar alignment butuh domain |
-| **EduDrop-ID** | Risiko paling rendah; data Dapodik terstruktur | Akses data sekolah butuh pengajuan |
-| **JudolFlow-X** | Paling KDD-style, tech wow factor tinggi | Execution risk tinggi, data ethics issue |
-| **GempaRank-X** | Impact darurat sangat tinggi, compute rendah | Rare event -> label scarcity |
-| **AirGuard** | Topik paling aman, data OpenAQ mudah | PM2.5 forecasting sudah sangat umum |
+| **WaterWatch-ID** | Multi-modal (TFT+GAT+ViT); Swasembada Air pillar | Data KLHK sparse secara temporal |
+| **DengueCast-X** | Best balance impact + novelty + feasibility | Data DBD kabupaten availability varies |
+| **TraceFish-ID** | Ekonomi Biru untouched; novelty tertinggi | Label IUU tidak ada (unsupervised) |
+| **PanganShock-X** | Termudah dieksekusi; laporan terbaik | Bisa terasa biasa tanpa angle kuat |
+| **ApiShield-ID** | Data melimpah (FIRMS); story kuat | Hotspot labels noisy |
+| **PadiWatch-X** | Multimodal (tabular+RS); food security | Crop calendar alignment butuh domain |
+| **EduDrop-ID** | Risiko terendah; data Dapodik terstruktur | Novelty medium |
+| **WasteWise-ID** | Ekonomi Hijau; data SIPSN publik | Benefit operasional tidak sedramatis kesehatan |
+| **GempaRank-X** | Compute terendah; post-event nowcasting | Label scarcity (gempa besar jarang) |
+| **JudolFlow-X** | KDD-style; tech wow factor | Execution risk tertinggi; data ethics |
+| **AirGuard** | Paling aman; OpenAQ mudah | PM2.5 forecasting sudah sangat umum |
 
-### 4.3 Decision Decision Tree (Who Should Pick What)
+## 7. Decision Engine
+
+### A. By Team Capability
 
 ```
-Tim memiliki 8 minggu dan GPU?
-├── YA dengan GPU cukup → WaterWatch-ID (multi-modal, TFT+GAT+ViT)
-├── YA GPU terbatas → DengueCast-X (TFT+ganti LSTM)
-├── TIDAK, GPU ringan → PanganShock-X (safe)
-└── TIDAK, tanpa GPU → EduDrop-ID / AirGuard (low compute)
-
-Tim punya remote sensing background?
-├── YA → WaterWatch-ID (ViT + Sentinel-2) atau ApiShield-ID (FIRMS)
-└── TIDAK → DengueCast-X / PanganShock-X (tabular + time-series)
-
-Tim ingin novelty tertinggi?
-├── YA dan berani risk → TraceFish-ID (Trajectory Transformer + GNN)
-└── YA tapi mau aman → WaterWatch-ID (multi-modal)
-
-Prioritas mudah eksekusi?
-├── YA → EduDrop-ID (data terstruktur, tabular, tanpa GPU)
-└── Tidak, mau menang → WaterWatch-ID / DengueCast-X
+GPU strength?
+├── GPU KUAT, RS skill ada
+│   ├── WaterWatch-ID (TFT+GAT+ViT full pipeline)
+│   └── ApiShield-ID (FIRMS + ConvLSTM + GraphSAGE)
+├── GPU KUAT, tabular/NLP focus
+│   ├── TraceFish-ID (Trajectory Transformer + GNN)
+│   ├── DengueCast-X (TFT + GNN + CatBoost)
+│   └── JudolFlow-X (retrieval + reranker + GNN) -- HIGH RISK
+├── GPU TERBATAS / tanpa GPU
+│   ├── EduDrop-ID (XGBoost + Mixed Effects, zero GPU)
+│   ├── PanganShock-X (Prophet + LightGBM, GPU optional)
+│   └── AirGuard (Prophet + LSTM, zero GPU)
+└── GPU TERBATAS, domain expert
+    ├── HydroRisk-ID (LightGBM + ConvLSTM)
+    ├── GempaRank-X (LightGBM + rules, zero GPU)
+    └── WasteWise-ID (N-BEATS + LightGBM)
 ```
 
----
+### B. By Risk Appetite
 
-## 5. Pipeline Architecture Template
+| Appetite | Top Pick | Runner-up | Kenapa |
+|----------|----------|-----------|--------|
+| **Safe** (90% success rate) | EduDrop-ID | PanganShock-X | Data terstruktur, pipeline sederhana, tanpa GPU |
+| **Balanced** (70% success rate) | WaterWatch-ID | DengueCast-X | Novelty tinggi tapi mitigasi jelas; fallback strategy ada |
+| **Ambitious** (50% success rate) | TraceFish-ID | JudolFlow-X | Unsupervised problem, pipeline kompleks, data ethics issue |
 
-### 5.1 Generic Pipeline untuk Topik Spatiotemporal (WaterWatch / DengueCast / ApiShield)
+### C. By Kemandirian Bangsa Pillar
+
+| Prioritas Pilar | Top Pick | Alternative |
+|-----------------|----------|-------------|
+| Swasembada Air | **WaterWatch-ID** (90) | -- |
+| Swasembada Pangan | **PanganShock-X** (91) | PadiWatch-X (88) |
+| Ekonomi Biru | **TraceFish-ID** (91) | -- |
+| Ekonomi Hijau | **WasteWise-ID** (86) | -- |
+| Kesehatan Publik | **DengueCast-X** (91) | AirGuard (84) |
+| Pendidikan | **EduDrop-ID** (87) | -- |
+| Kebencanaan | **ApiShield-ID** (91) | HydroRisk-ID (89), GempaRank-X (86) |
+| Keamanan Digital | **JudolFlow-X** (84) | -- |
+
+### D. Quick Self-Assessment (5 Questions)
+
+Answer yes/no to narrow down:
+
+| # | Question | If YES | If NO |
+|---|----------|--------|-------|
+| 1 | Tim punya akses GPU untuk training? | Go to Q2 | EduDrop / PanganShock / AirGuard |
+| 2 | Ada anggota dengan remote sensing skill? | WaterWatch / ApiShield / PadiWatch | Go to Q3 |
+| 3 | Prioritas novelty di atas segalanya? | TraceFish / JudolFlow | Go to Q4 |
+| 4 | Ingin dampak sosial paling visible? | DengueCast / EduDrop | PanganShock / HydroRisk |
+| 5 | Deadline ketat (< 6 minggu)? | EduDrop / PanganShock / AirGuard | WaterWatch / ApiShield |
+
+## 8. Pipeline Architecture
+
+### Generic Pipeline (WaterWatch / DengueCast / ApiShield / HydroRisk)
 
 ```mermaid
 flowchart LR
-    subgraph Data["📊 Data Sources"]
-        D1[Sumber A<br/>Tabular/Time-series]
-        D2[Sumber B<br/>Weather/Climate]
-        D3[Sumber C<br/>Geospatial/OSM]
-        D4[Sumber D<br/>Text/Satelit]
+    subgraph Data["Data Sources"]
+        D1[Tabular / Time-series]
+        D2[Weather / Climate]
+        D3[Geospatial / OSM]
+        D4[Text / Satellite]
     end
-
-    subgraph Preprocess["🧹 Preprocessing"]
-        P1[Aggregation<br/>& Cleaning]
-        P2[Feature<br/>Engineering]
-        P3[Train/Val/Test<br/>Split]
+    subgraph Preprocess["Preprocessing"]
+        P1[Aggregation & Cleaning]
+        P2[Feature Engineering]
+        P3[Train/Val/Test Split]
     end
-
-    subgraph Models["🤖 Modeling Stack"]
-        M1[Branch A<br/>Tabular Booster<br/>LightGBM/CatBoost]
-        M2[Branch B<br/>Temporal Deep<br/>TFT/ConvLSTM]
-        M3[Branch C<br/>Graph Neural Net<br/>GraphSAGE/GAT]
-        M4[Optional<br/>Text/NLP Branch]
+    subgraph Models["Modeling Stack"]
+        M1[Branch A: Tabular Booster]
+        M2[Branch B: Temporal Deep]
+        M3[Branch C: Graph Neural Net]
+        M4[Optional Text/NLP]
     end
-
-    subgraph Fusion["🔗 Fusion & Post-process"]
-        F1[Weighted<br/>Ensemble]
-        F2[Calibration<br/>Platt Scaling]
-        F3[Threshold<br/>Tuning]
+    subgraph Fusion["Fusion & Post-process"]
+        F1[Weighted Ensemble]
+        F2[Calibration]
+        F3[Threshold Tuning]
     end
-
-    subgraph Output["📋 Output"]
-        O1[Ranked Priority<br/>List]
-        O2[Risk Score<br/>+ Uncertainty]
+    subgraph Output["Output"]
+        O1[Ranked Priority List]
+        O2[Risk Score + Uncertainty]
     end
-
-    subgraph Metrics["📐 Evaluation"]
+    subgraph Metrics["Evaluation"]
         E1[PR-AUC]
         E2[Recall@Top-K]
         E3[F1 / MAE]
-        E4[Calibration<br/>Error]
     end
-
     Data --> Preprocess --> Models --> Fusion --> Output
     Output --> Metrics
 ```
 
-### 5.2 Pipeline per Topik
+### Pipeline per Topik
 
 | Topik | Data Sources | Modeling Branches | Output | Khas |
 |-------|-------------|-------------------|--------|------|
 | **WaterWatch-ID** | KLHK + BMKG + Sentinel-2 + OSM | TFT + GAT + ViT + CatBoost | Ranked DAS priority list | Multi-modal (time + graph + vision) |
-| **DengueCast-X** | Kemenkes + BMKG + BPS + OSM | Tabular (CatBoost) + TFT + GNN + News | Ranked district intervention list | Spatiotemporal + public health |
-| **TraceFish-ID** | GFW KKP + BMKG + Pelabuhan | Trajectory Transformer + XGBoost + GNN | IUU risk rank per kapal | Trajectory + graph anomaly |
-| **PanganShock-X** | PIHPS + BMKG + BPS + News | Prophet + Tabular (LightGBM) + TFT + Text | Ranked region-commodity alert | Dual objective (reg + class) |
-| **ApiShield-ID** | NASA FIRMS + BMKG + Sentinel + OSM | Tabular (LightGBM) + ConvLSTM + GNN | Ranked village patrol list | Remote sensing + hotspot |
+| **DengueCast-X** | Kemenkes + BMKG + BPS + OSM | CatBoost + TFT + GNN + News | Ranked district intervention list | Spatiotemporal + public health |
+| **TraceFish-ID** | GFW + KKP + BMKG + Pelabuhan | Trajectory TF + XGBoost + GNN + LSTM | IUU risk rank per kapal | Trajectory + graph anomaly |
+| **PanganShock-X** | PIHPS + BMKG + BPS + News | Prophet + LightGBM + TFT + Text | Ranked region-commodity alert | Dual objective (reg + class) |
+| **ApiShield-ID** | NASA FIRMS + BMKG + Sentinel + OSM | LightGBM + ConvLSTM + GNN | Ranked village patrol list | Remote sensing + hotspot |
 | **HydroRisk-ID** | BNPB + BMKG + OSM + DEMNAS | LightGBM + ConvLSTM + Graph exposure | Flood severity rank | Multi-hazard (flood+slide) |
-| **PadiWatch-X** | BPS + BMKG + Sentinel-2 | Tabular (LightGBM) + 3D CNN + Multimodal fusion | Anomaly map per season | Multimodal (tabular + RS) |
-| **EduDrop-ID** | Dapodik + BPS + OSM | XGBoost + Mixed Effects Model + K-Prototypes | School risk priority list | Hierarchical + clustering |
-| **WasteWise-ID** | SIPSN KLHK + BMKG + BPS + OSM | N-BEATS + LightGBM + GNN + ILP routing | Waste forecast + route opt | Forecasting + optimization |
-| **GempaRank-X** | BMKG + BNPB + OSM + BPS | Rule-based + LightGBM + GNN + Travel-time | First-hour triage dashboard | Post-event nowcasting |
+| **PadiWatch-X** | BPS + BMKG + Sentinel-2 | LightGBM + 3D CNN + Multimodal fusion | Anomaly map per season | Multimodal (tabular + RS) |
+| **EduDrop-ID** | Dapodik + BPS + OSM | XGBoost + Mixed Effects + K-Prototypes | School risk priority list | Hierarchical + clustering |
+| **WasteWise-ID** | SIPSN + BMKG + BPS + OSM | N-BEATS + LightGBM + GNN + ILP | Waste forecast + route optimization | Forecasting + optimization |
+| **GempaRank-X** | BMKG + BNPB + OSM + BPS | Rule-based + LightGBM + GNN | First-hour triage dashboard | Post-event nowcasting |
 | **JudolFlow-X** | Scraping + OSINT + blocklists | Embedding + Classifier + Reranker + GNN | Risk cluster score | 6-stage retrieval + graph |
-| **AirGuard Sekolah** | OpenAQ + BMKG + BPS | Prophet + LightGBM + LSTM | School-day risk alert | PM2.5 forecasting + exposure |
+| **AirGuard** | OpenAQ + BMKG + BPS | Prophet + LightGBM + LSTM | School-day risk alert | PM2.5 + exposure |
 
-### 5.3 Struktur Experiment Matrix (Wajib untuk Technical Report)
+### Experiment Matrix (Wajib untuk Technical Report)
 
-Setiap topik WAJIB memiliki baseline ladder. Format:
+Setiap topik WAJIB memiliki baseline ladder dengan format:
 
-| Level | Model | PR-AUC | Recall@Top-10% | Catatan |
-|:-----:|-------|:------:|:--------------:|---------|
-| 1 | Naive baseline (e.g., mean/most-frequent) | 0.50 | 0.10 | Built-in scikit-learn DummyClassifier |
-| 2 | Simple time-series (Prophet/SARIMA) | 0.62 | 0.25 | Hanya untuk temporal features |
+| Level | Model | Target PR-AUC | Recall@Top-10% | Notes |
+|:-----:|-------|:-------------:|:--------------:|-------|
+| 1 | Naive baseline | 0.50 | 0.10 | DummyClassifier |
+| 2 | Simple time-series (Prophet/SARIMA) | 0.62 | 0.25 | Hanya temporal |
 | 3 | Strong tabular (LightGBM/CatBoost) | 0.74 | 0.38 | Full feature set |
-| 4 | Advanced deep (TFT/ConvLSTM/GNN) | 0.81 | 0.45 | Masing-masing branch |
-| 5 | Full pipeline (fusion + calibration) | **0.85** | **0.52** | **Proposed method** |
-| 6 | Ablation: -GNN | 0.82 | 0.48 | Kontribusi GNN |
-| 7 | Ablation: -TFT | 0.80 | 0.46 | Kontribusi temporal deep |
-| 8 | Ablation: -text | 0.83 | 0.50 | Kontribusi text signals |
+| 4 | Advanced deep (TFT/ConvLSTM/GNN) | 0.81 | 0.45 | Per branch |
+| 5 | **Full pipeline (fusion + calibration)** | **0.85** | **0.52** | **Proposed** |
+| 6-8 | Ablations: -GNN, -TFT, -text | 0.80-0.83 | 0.46-0.50 | Kontribusi per branch |
 
----
+## 9. Decision Checklist
 
-## 6. Decision Checklist
+### Screening Questions
 
-### 6.1 Screening Questions
+| Pertanyaan | Pilihan |
+|------------|---------|
+| **Data availability** -- Dataset primer bisa didapat dalam **1-2 minggu**? | [✅] Ya -- topik dengan data scoring ⭐⭐⭐⭐+ / [❌] Tidak |
+| **Tim skill match** -- Ada anggota yang bisa handle modeling yang direncanakan? | [✅] Ya / [❌] Tidak |
+| **Compute adequacy** -- Laptop/GPU cukup untuk training model? | [✅] Ya / [❌] Tidak |
+| **Story clarity** -- Problem statement bisa dijelaskan dalam **1 kalimat**? | [✅] Ya / [❌] Tidak |
+| **Tim enthusiasm** -- Semua anggota **excited** dengan topik ini? | [✅] Ya / [❌] Tidak |
+| **Novelty check** -- Apakah ada publikasi/makalah GEMASTIK sebelumnya yang identik? | [✅] Tidak ada / [❌] Ada -- perlu differentiator |
+| **8-week feasibility** -- Pipeline bisa diselesaikan dalam 8 minggu? | [✅] Ya / [❌] Tidak -- perlu scope-down |
 
-| Pertanyaan | Pilihan (centang salah satu) |
-|------------|------------------------------|
-| **Data availability** — Dataset primer bisa didapat dalam **1-2 minggu**? | [✅] Ya — topik dengan data scoring ⭐⭐⭐⭐+ / [❌] Tidak |
-| **Tim skill match** — Ada anggota yang bisa handle modeling yang direncanakan? | [✅] Ya / [❌] Tidak |
-| **Compute adequacy** — Laptop/GPU cukup untuk training model? | [✅] Ya / [❌] Tidak |
-| **Story clarity** — Problem statement bisa dijelaskan dalam **1 kalimat**? | [✅] Ya / [❌] Tidak |
-| **Tim enthusiasm** — Semua anggota **excited** dengan topik ini? | [✅] Ya / [❌] Tidak |
-| **Novelty check** — Apakah ada publikasi/makalah GEMASTIK sebelumnya yang identik? | [✅] Tidak ada / [❌] Ada — perlu differentiator |
-| **8-week feasibility** — Pipeline bisa diselesaikan dalam 8 minggu? | [✅] Ya / [❌] Tidak — perlu scope-down |
-
-### 6.2 Final Decision Record
+### Final Decision Record
 
 ```
 ================================================================
@@ -1473,82 +914,386 @@ Tim member & role:
 - Member 2 (__________):  _______________________________________
 - Member 3 (__________):  _______________________________________
 
-Backup plan (jika topik utama gagal di minggu 1-2):
+Target timeline:
+- Week 1-2:   Data collection & preprocessing
+- Week 3-4:   Baseline models & initial experiments
+- Week 5-6:   Full pipeline & hyperparameter tuning
+- Week 7:     Ablation study & evaluation
+- Week 8:     Technical report writing & finalization
 
-   Topik cadangan:        _________________________________________
-
-   Trigger fallback:      [ ] Data tidak tersedia
-                          [ ] Compute tidak mencukupi
-                          [ ] Lainnya: ________________________
-
-================================================================
+Checklist final:
+[ ] Dataset sudah siap dan terverifikasi
+[ ] Baseline ladder lengkap (5 levels)
+[ ] Ablation study selesai
+[ ] Evaluasi metrik semua terisi
+[ ] Technical report draft selesai
+[ ] PPT final presentation siap
+[ ] Simulasi 5-jam hidden case (min 2x)
 ```
-
----
-
-## 7. Appendix: Sumber Dataset per Topik
-
-### 7.1 Data Portal Umum (Akses Terbuka)
-
-| Sumber | URL | Tipe Data | Cocok untuk Topik |
-|--------|-----|-----------|-------------------|
-| **BPS API** | https://webapi.bps.go.id/ | Statistik daerah, demografi, ekonomi, harga | Semua topik kecuali TraceFish |
-| **BMKG Iklim** | https://iklim.bmkg.go.id/ | Cuaca, iklim, SPI, suhu | WaterWatch, DengueCast, ApiShield, PadiWatch, HydroRisk |
-| **KLHK SIPSN** | https://sipsn.menlhk.go.id/ | Timbulan sampah per kab/kota | **WasteWise-ID** (esensial!) |
-| **KLHK Data** | https://data.go.id/ | Kualitas air, status mutu, DAS | **WaterWatch-ID** (esensial!) |
-| **Global Fishing Watch** | https://globalfishingwatch.org/ | AIS trajectory, fishing activity | **TraceFish-ID** (esensial!) |
-| **Kemendikdasmen** | https://data.kemendikdasmen.go.id/ | Dapodik, angka putus sekolah, fasilitas | **EduDrop-ID** (esensial!) |
-| **BNPB DIBI** | https://data.bnpb.go.id/ | Bencana historis, dampak | HydroRisk, ApiShield, GempaRank |
-| **NASA FIRMS** | https://firms.modaps.eosdis.nasa.gov/ | Hotspot real-time (MODIS/VIIRS) | **ApiShield-ID** (esensial!) |
-| **Copernicus Data Space** | https://dataspace.copernicus.eu/ | Citra Sentinel (optik, radar) | WaterWatch, ApiShield, PadiWatch, HydroRisk |
-| **OpenStreetMap** | https://download.geofabrik.de/ | Jalan, bangunan, boundary, sungai | Semua topik (geospatial) |
-| **OpenAQ** | https://openaq.org/ | PM2.5, PM10, O3, NO2 real-time | AirGuard |
-| **Google Earth Engine** | https://earthengine.google.com/ | Platform processing citra satelit | WaterWatch, PadiWatch, ApiShield |
-
-### 7.2 Dataset Spesifik per Topik
-
-| Rank | Topik | Data Utama | Sumber Primer |
-|:----:|-------|-----------|---------------|
-| 1 | **WaterWatch-ID** | Parameter DO/BOD/COD; NDWI Sentinel-2; graph DAS | KLHK; Sentinel-2/GEE; BBWS PUPR |
-| 2 | **DengueCast-X** | Kasus DBD per kabupaten/minggu; cuaca; demografi | Kemenkes / Data.go.id; BMKG; BPS |
-| 3 | **TraceFish-ID** | AIS trajectory; VMS; ZEEI boundary; data pelabuhan | Global Fishing Watch API; KKP; BIG |
-| 4 | **PanganShock-X** | Harga harian 50+ komoditas; inflasi daerah; berita | PIHPS BPS; BPS API; Google News |
-| 5 | **ApiShield-ID** | Hotspot FIRMS; cuaca BMKG; NDVI Sentinel; OSM | NASA FIRMS; BMKG; Copernicus; OSM |
-| 6 | **HydroRisk-ID** | Banjir/longsor historis; curah hujan; DEM; DAS | BNPB; BMKG; DEMNAS; KLHK |
-| 7 | **PadiWatch-X** | Hasil panen (KSA); iklim; NDVI time-series | BPS; BMKG; Sentinel-2/GEE |
-| 8 | **EduDrop-ID** | Data Dapodik; kemiskinan BPS; fasilitas sekolah | Kemendikdasmen; BPS; OSM |
-| 9 | **WasteWise-ID** | Timbulan sampah SIPSN; demografi; cuaca | SIPSN KLHK; BPS; BMKG |
-| 10 | **GempaRank-X** | Katalog gempa; OSM; demografi BPS | BMKG; OSM; BPS |
-| 11 | **JudolFlow-X** | Komentar/domain/handle; OSINT blocklists | Scraping (etis); data publik |
-| 12 | **AirGuard** | PM2.5 sensor; cuaca BMKG; lokasi sekolah | OpenAQ; BMKG; OSM |
-
----
-
-## 🏁 Final Note
-
-**Total topik dianalisis:** 12
-**Rentang score:** 84/100 — 91/100
-**Rekomendasi untuk tim:
-```
-1. WaterWatch-ID   → jika tim mau multi-modal + swasembada air (Kemandirian Bangsa pillar)
-2. DengueCast-X   → jika data DBD available & mau win chance terbaik
-3. TraceFish-ID   → jika mau novelty tertinggi (Trajectory Transformer + GNN)
-4. PanganShock-X  → jika mau eksekusi paling aman & laporan terbaik
-5. EduDrop-ID     → jika mau risiko terendah tanpa GPU
-```
-5. PadiWatch-X    → if have remote sensing background
-```
-
-**Setelah tim memutuskan topik final (via §6), langkah selanjutnya:**
-
-| Minggu | Aktivitas | Deliverable |
-|:------:|-----------|-------------|
-| 1-2 | Validasi dataset, scraping, EDA | Dataset card, EDA notebook |
-| 3-4 | Baseline ladder (level 1-3) | Baseline results table |
-| 5-6 | Advanced methods + fusion | Full pipeline results |
-| 7 | Ablation + error analysis + SHAP | Ablation table, error atlas |
-| 8 | Report writing + PPT + rehearsal | Technical report PDF, code, PPT |
 
 ---
 
 *Dokumen ini dapat diperbarui setiap kali ada keputusan baru atau informasi tambahan.*
+
+## 10. Appendix: Full Detail per Topik
+
+### Appendix A: WaterWatch-ID
+
+**Data Sources (Complete):**
+
+| Data | Sumber Utama | Variabel Kunci | Akses |
+|------|-------------|----------------|-------|
+| Parameter kualitas air historis | KLHK / Satu Data Indonesia | DO, BOD, COD, pH, TSS, Nitrat, Fosfat | data.go.id |
+| Debit & elevasi sungai | BBWS / Kementerian PUPR | Debit harian, tinggi muka air | Data PUPR |
+| Land use catchment area | KLHK / Geospatial Bappenas | Proporsi hutan, sawah, industri, permukiman | geoportal.bappenas |
+| Citra satelit optik | Copernicus Sentinel-2 | NDWI, turbidity | Google Earth Engine |
+| Curah hujan & iklim | BMKG | Curah hujan harian, intensitas | iklim.bmkg.go.id |
+| Graph DAS | Bappenas / OSM | Segmen sungai, anak sungai, muara | Geospasial |
+
+**Preprocessing Steps:**
+1. Aggregasi temporal -- rata-rata parameter per minggu per titik sampling
+2. Interpolasi sparse -- KNN Imputer + temporal interpolation
+3. Fusion data spasial -- join titik monitoring ke segmen DAS terdekat
+4. NDWI extraction -- median composite per 2 minggu dari Sentinel-2, cloud-masked
+5. Lag features -- rolling window 1, 2, 4, 8 minggu
+6. Graph construction -- DAS graph: nodes = segmen sungai, edges = aliran hulu-hilir
+7. Train/val/test split -- temporal walk-forward, test set = tahun terbaru
+
+**Full Evaluation Strategy:**
+
+| Metrik | Tujuan |
+|--------|--------|
+| MAE / RMSE | Primary -- error WQI regresi |
+| MAPE | Persentase error untuk interpretasi |
+| PR-AUC | Klasifikasi status mutu air (baik/cemar ringan/cemar berat) |
+| Recall@Top-K segmen | Operational -- segmen prioritas restorasi tertangkap |
+| Spatial consistency | Prediksi konsisten secara spasial (hulu-hilir) |
+| Ablation gain | Kontribusi tiap branch terhadap akurasi |
+
+**Full Scoring Justification:**
+- **Keaslian 18/20**: Water quality prediction sudah ada, tapi multi-branch fusion (TFT+GAT+ViT) untuk ranking prioritas restorasi DAS sangat orisinal
+- **Kebaruan 19/20**: Integrasi time-series parameter kimia + graph DAS + citra satelit (ViT) untuk WQI di Indonesia belum ada
+- **Manfaat 19/20**: Air bersih adalah fondasi kemandirian bangsa. Relevan dengan SDG 6
+- **Kejelasan 17/20**: Butuh domain knowledge dasar tentang parameter kualitas air
+- **Kelengkapan 17/20**: Data KLHK perlu preprocessing sparse, tapi setelah bersih baselines jelas
+
+---
+
+### Appendix B: DengueCast-X
+
+**Data Sources:**
+
+| Data | Sumber Utama | Variabel Kunci | Akses |
+|------|-------------|----------------|-------|
+| Kasus DBD historis | Kemenkes / Satu Data Indonesia | Incidence count per district-week | data.go.id |
+| Iklim & cuaca | BMKG API | Rainfall, temperature, humidity | iklim.bmkg.go.id |
+| Demografi | BPS API | Populasi, density, urbanisasi | webapi.bps.go.id |
+| Geospasial | OpenStreetMap | District adjacency, elevasi, sungai | download.geofabrik.de |
+| Berita kesehatan (optional) | Google News scraping | Outbreak keywords, sentiment | RSS/NLP pipeline |
+
+**Preprocessing:**
+1. Aggregasi mingguan -- dari data harian ke level district-week
+2. Rolling lag windows -- 1, 2, 4, 8, 12 minggu
+3. Normalisasi per-district -- standarisasi mean/std historis
+4. Imputasi missing value -- MICE untuk data cuaca tidak lengkap
+5. Outlier handling -- IQR method / Isolation Forest
+6. Spatial adjacency matrix -- binary adjacency dari boundary sharing OSM
+7. Train/val/test split -- forward-chaining temporal
+
+**Full Evaluation:**
+
+| Metrik | Tujuan |
+|--------|--------|
+| PR-AUC | Primary -- ranking quality dengan class imbalance |
+| Recall@Top-10% districts | Operational utility |
+| Recall@Top-20% districts | Coverage breadth |
+| Temporal backtesting | Walk-forward multi-season validation |
+| Lead-time gain | Warning lead time vs baseline |
+| Calibration error (ECE) | Probability calibration quality |
+| SHAP / attention visualization | Explainability |
+
+---
+
+### Appendix C: TraceFish-ID
+
+**Data Sources:**
+
+| Data | Sumber Utama | Variabel Kunci | Akses |
+|------|-------------|----------------|-------|
+| AIS trajectory kapal | Global Fishing Watch API | Lat, lon, speed, heading, timestamp | globalfishingwatch.org |
+| VMS data kapal Indonesia | KKP (pernah dirilis publik) | Kapal >30 GT, tracker wajib | Data terbuka |
+| Fishing zone / ZEEI | Bappenas / BIG | Batas ZEEI, kawasan konservasi | Geospasial |
+| Data pelabuhan | KKP / BPS | Lokasi pelabuhan, kapasitas | Data publik |
+| Cuaca maritim | BMKG Maritim | Gelombang, angin, visibility | bmkg.go.id |
+
+**Preprocessing:**
+1. Trajectory resampling -- interpolasi ke interval 10 menit
+2. Fishing activity labeling -- speed <3 knot + random heading change; validasi GFW
+3. Feature extraction -- speed distribution, turning angle, trip duration, jarak ke ZEEI
+4. Port-to-port segmentation -- trajectory per trip
+5. Bipartite graph -- nodes: kapal + pelabuhan; edges: frekuensi kunjungan
+6. Anomaly score baseline -- isolation forest untuk label proxy
+7. Temporal split -- train 2022-2023, val 2024, test 2025
+
+**Full Evaluation:**
+
+| Metrik | Tujuan |
+|--------|--------|
+| PR-AUC | Primary -- IUU sangat rare (<1% trips) |
+| Recall@Top-K kapal | Operational kapasitas inspeksi |
+| F1 per jenis IUU | transshipment, boundary, gear |
+| Cluster purity | Graph community detection quality |
+| Temporal backtesting | Konsistensi antar musim |
+| Case studies | Validasi kasus IUU terkonfirmasi |
+
+---
+
+### Appendix D: PanganShock-X
+
+**Data Sources:**
+
+| Data | Sumber | Variabel | Akses |
+|------|--------|----------|-------|
+| Harga harian komoditas | PIHPS BPS | 50+ komoditas | pipps.bps.go.id |
+| Inflasi daerah | BPS API | IHK per kota | webapi.bps.go.id |
+| Cuaca & iklim | BMKG | Rainfall, temperature, anomaly | iklim.bmkg.go.id |
+| Kalender tanam/panen | Kementan | Musim tanam per komoditas | Data terbuka |
+| Berita & sentimen | Google News / RSS | Berita pangan regional | Scraping NLP |
+
+**Preprocessing:**
+1. Panel time-series construction (region x commodity x date)
+2. Spike labeling -- >2 std from 30-day rolling mean
+3. Missing price interpolation -- linear (gap <=3 hari), forward-fill (lebih)
+4. Rolling features -- mean, std, min, max window 7, 14, 30 hari
+5. Holiday & event flags -- puasa, lebaran, natal, pemilu
+6. Calendar alignment -- harvest season per region x commodity
+
+**Full Evaluation:**
+
+| Metrik | Tujuan |
+|--------|--------|
+| wMAPE / sMAPE | Weighted/symmetric MAPE untuk regresi harga |
+| PR-AUC | Spike/no-spike classification |
+| Recall@Top-K alerts | Operational spike detection |
+| Directional accuracy | % prediksi arah (naik/turun) benar |
+| Calibration plot | Reliability diagram spike probability |
+
+---
+
+### Appendix E: ApiShield-ID
+
+**Data Sources:**
+
+| Data | Sumber | Variabel Kunci |
+|------|--------|----------------|
+| Hotspot aktif real-time | NASA FIRMS (MODIS/VIIRS) | Latitude, longitude, confidence, FRP |
+| Cuaca | BMKG | Curah hujan, kelembaban, suhu, angin |
+| Historical fires | BNPB DIBI | Rekaman kebakaran historis |
+| Satelit optik | Copernicus Sentinel-2 | NDVI, land cover classification |
+| Exposure layers | OpenStreetMap | Pemukiman, jalan, lahan, sungai |
+
+**Preprocessing:**
+1. Spatial join -- hotspot -> grid desa/kecamatan (1 km2)
+2. Rainfall deficit -- SPI 1, 3, 6 bulan
+3. Lag features -- hotspot count 1, 3, 7, 14, 30 hari
+4. Land cover aggregation -- proporsi peat, forest, plantation
+5. Temporal split -- forward-chaining; exclusion El Nino
+6. Class balancing -- positive class (~1-5%)
+
+**Full Evaluation:**
+
+| Metrik | Tujuan |
+|--------|--------|
+| PR-AUC | Primary -- class imbalance ekstrem |
+| Recall@Top-K villages | Operational patrol prioritization |
+| Lead-time gain | Hari lebih awal dibanding baseline |
+| Calibration error | Uncertainty reliability |
+| Spatial stress test | Province-wise evaluation |
+
+---
+
+### Appendix F: HydroRisk-ID
+
+**Data Sources:**
+
+| Data | Sumber |
+|------|--------|
+| Banjir/longsor historis | BNPB DIBI |
+| Curah hujan harian, prakiraan 3-7 hari | BMKG |
+| DEM / topography / kemiringan lereng | Copernicus / DEMNAS |
+| Land use, DAS | KLHK / Geospatial Bappenas |
+| Populasi, bangunan, infrastruktur vital | BPS + OSM |
+
+**Preprocessing:**
+1. Event aggregation per subdistrict per day -> binary + severity multi-class
+2. Rainfall accumulation -- cumulative 1, 3, 7 hari
+3. Topography features -- slope, elevation, distance to river
+4. Exposure weighting -- population x building density
+5. Temporal split -- forward-chaining
+6. Address label lag & underreporting -- explicit section
+
+---
+
+### Appendix G: PadiWatch-X
+
+**Data Sources:**
+
+| Data | Sumber |
+|------|--------|
+| Hasil panen per kabupaten/musim | BPS (Ubinan / KSA) |
+| Climate indices (SPI, NDVI anomaly) | BMKG + Copernicus |
+| Citra satelit NDVI/EVI | Sentinel-2 / MODIS (GEE) |
+| Peta lahan sawah | Kementan / Geospatial |
+| Kalender tanam | Kementan (per provinsi) |
+
+**Preprocessing:**
+1. Seasonal aggregation -- MT1 (Okt-Mar), MT2 (Apr-Sep)
+2. NDVI temporal profiles -- cloud masking -> median composite 16 hari
+3. Climate anomaly indices -- SPI 1, 3, 6 bulan; temperature anomaly
+4. Crop calendar alignment -- berbeda per provinsi
+
+**Full Evaluation:**
+
+| Metrik | Tujuan |
+|--------|--------|
+| MAE, R2 | Regresi yield |
+| Directional accuracy on anomalies | Arah anomali benar |
+| Per-province robustness | Generalisasi ke unseen provinces |
+| Ablation: climate-only vs multimodal | Kontribusi RS |
+
+---
+
+### Appendix H: EduDrop-ID
+
+**Data Sources:**
+
+| Data | Sumber Utama | Variabel Kunci | Akses |
+|------|-------------|----------------|-------|
+| Data pokok pendidikan (Dapodik) | Kemendikdasmen | Siswa, guru, rombel, putus sekolah, akreditasi | dapodik.kemdikbud.go.id |
+| Data kemiskinan | BPS | % kemiskinan, PDRB per kapita | bps.go.id |
+| Infrastruktur sekolah | Dapodik + OSM | Listrik, air, toilet, jarak | dapodik + osm.org |
+| Program bantuan | Puslapdik | Penerima BOS, PIP, KIP | Data publik |
+
+**Preprocessing:**
+1. School-level aggregation per tahun
+2. Target definition -- % putus sekolah per tahun (atau binary threshold)
+3. Lag features -- tren 2-3 tahun, delta enrollment, rasio guru/siswa
+4. Spatial features -- kemiskinan, akses transportasi per kecamatan
+5. Categorical encoding -- provinsi/kabupaten sebagai hierarchical group
+6. Train/val/test split -- temporal: train 2020-2022, val 2023, test 2024
+7. Imbalance handling -- fokus ke sekolah risiko tinggi
+
+**Full Evaluation:**
+
+| Metrik | Tujuan |
+|--------|--------|
+| PR-AUC | Primary -- dropout class minoritas |
+| Recall@Top-K sekolah | Operational prioritization |
+| F1-score | Balanced precision-recall |
+| RMSE | Regresi persentase putus sekolah |
+| CV by province | Generalisasi ke unseen provinces |
+
+---
+
+### Appendix I: WasteWise-ID
+
+**Data Sources:**
+
+| Data | Sumber Utama | Variabel Kunci | Akses |
+|------|-------------|----------------|-------|
+| Timbulan sampah historis | SIPSN KLHK | Tonase per hari per kab/kota | sipsn.menlhk.go.id |
+| Demografi & kepadatan | BPS | Penduduk, kepadatan, PDRB | bps.go.id |
+| Data cuaca | BMKG | Curah hujan, suhu | iklim.bmkg.go.id |
+| Hari libur & event | Kemenko PMK | Libur nasional, hari besar, event | Data publik |
+| TPS/TPA location | OpenStreetMap | Lokasi TPS, TPA, jarak | osm.org |
+
+**Preprocessing:**
+1. Daily aggregation -- tonase per kecamatan per hari
+2. Holiday feature -- binary flags
+3. Weather features -- curah hujan kumulatif 1, 3, 7 hari
+4. Lag features -- timbulan 1, 2, 3, 7 hari sebelumnya
+5. Population normalization -- tonase per 1000 penduduk
+6. Spatial adjacency -- graph kecamatan
+7. Temporal walk-forward split
+
+---
+
+### Appendix J: GempaRank-X
+
+**Data Sources:**
+
+| Data | Sumber |
+|------|--------|
+| Katalog gempa (magnitudo, depth, lokasi, waktu) | BMKG |
+| Historical damage reports | BNPB DIBI |
+| Buildings, roads, health facilities | OpenStreetMap |
+| Populasi per desa/kecamatan | BPS |
+| Topografi / soil type (liquefaction risk) | Copernicus / DEMNAS |
+
+**Preprocessing:**
+1. Define impact target -- affected population / building damage proxy
+2. Exposure layer -- building count, road density, facility count per district
+3. Graph -- district connectivity + travel time to hospitals
+4. Scenario backtests -- simulate historical earthquakes
+
+**Full Evaluation:**
+
+| Metrik | Tujuan |
+|--------|--------|
+| NDCG@K, Recall@Top-K | Ranking quality of impacted districts |
+| MAE on affected population | Impact magnitude accuracy |
+| Scenario backtests | On historical earthquake events |
+| Ablation | Rule-based vs learned, +/- graph |
+
+---
+
+### Appendix K: JudolFlow-X
+
+**Data Sources & Preprocessing:**
+1. Scraping dari platform publik (medsos, Telegram publik) -- etis, data publik
+2. URL canonicalization -- resolve shortlinks
+3. Entity extraction -- domain, handle, phone, payment alias
+4. Slang normalization -- "gacor", "maxwin", "bonanza"
+5. Graph construction -- nodes: user, domain, handle; edges: co-occurrence
+6. Weak labeling -- rule-based dari keyword + OSINT lists
+
+**Full Evaluation:**
+
+| Metrik | Tujuan |
+|--------|--------|
+| Macro F1 | Suspicious content classification |
+| PR-AUC | Imbalanced labels |
+| Entity extraction F1 | Per entity type |
+| Cluster purity / NMI | Graph clustering quality |
+| Precision@K | Suspicious cluster ranking |
+| Case study | Qualitative evaluation |
+
+---
+
+### Appendix L: AirGuard Sekolah
+
+**Data Sources:**
+
+| Data | Sumber Utama | Variabel Kunci | Akses |
+|------|-------------|----------------|-------|
+| PM2.5 real-time & historis | OpenAQ | PM2.5, PM10, O3, NO2 | openaq.org |
+| Cuaca & iklim | BMKG | Suhu, kelembaban, kecepatan angin | iklim.bmkg.go.id |
+| Lokasi sekolah | OSM / Dapodik | Koordinat sekolah, jenjang | osm.org |
+| Kalender akademik | Kemendikdasmen | Hari sekolah, libur, ujian | Data publik |
+
+**Preprocessing:**
+1. Hourly PM2.5 aggregation -> daily mean per stasiun
+2. Spatial interpolation -- inverse distance weighting ke lokasi sekolah
+3. Lag features -- PM2.5 1, 2, 3 hari sebelumnya
+4. Meteorological features -- suhu, kelembaban, wind speed
+5. Holiday flags -- hari sekolah, libur nasional
+6. Train/val/test split -- temporal
+
+**Full Evaluation:**
+
+| Metrik | Tujuan |
+|--------|--------|
+| MAE / RMSE | PM2.5 forecast error |
+| Alert precision | School-day risk alert accuracy |
+| Peak detection | High pollution day detection |
+| Spatial CV | Generalisasi antar kota |
