@@ -1,1 +1,59 @@
+# Python Caches & Environments
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+venv/
+ENV/
+env/
+.pytest_cache/
+.ipynb_checkpoints/
+.ruff_cache/
+.mypy_cache/
+
+# Streamlit Configuration
+.streamlit/
+
+# Secrets & Environment variables
+.env
+.env.*
+!.env.example
+
+# LaTeX Compilation Auxiliary Files
+**/reports/*.aux
+**/reports/*.log
+**/reports/*.out
+**/reports/*.toc
+**/reports/*.synctex.gz
+**/reports/*.bbl
+**/reports/*.blg
+**/reports/*.pdf
 *.pdf
+
+# Rendered Docs
+**/reports/rendered_docx*/
+
+# Scraping & Raw Data Snapshots
+**/data/raw/live_*.csv
+**/data/raw/*.html
+
+# IDE & Editor Configurations
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.swp
+*~
+
+# Operating System Files
+.DS_Store
+Thumbs.db
+
+# Workspace Specific Backups & Temporary files
+.antigravitycli/
+.sisyphus/
+*.bak*
+Panduan-GEMASTIK-2025-Data-Mining.txt
+Winner-Level-Playbook.txt
