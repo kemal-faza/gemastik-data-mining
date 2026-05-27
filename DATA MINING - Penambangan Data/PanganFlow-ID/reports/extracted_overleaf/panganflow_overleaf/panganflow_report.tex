@@ -55,13 +55,7 @@ Kemandirian bangsa yang kokoh berakar pada ketahanan sektor strategisnya, salah 
 
 Dari 38 provinsi di Indonesia, hanya 14 provinsi yang mencatat surplus produksi beras (terkonsentrasi di Pulau Jawa dan Sulawesi Selatan), sedangkan 24 provinsi lainnya secara konsisten mengalami defisit pasokan lokal. Region Maluku-Papua merupakan wilayah yang paling rentan; seluruh provinsi di wilayah tersebut mengalami defisit produksi struktural dengan tingkat harga eceran melampaui median nasional. Kondisi geografis kepulauan Indonesia menuntut adanya pendekatan Teknologi Informasi dan Komunikasi (TIK) yang cerdas dan prediktif. Pemanfaatan metodologi \textit{data mining} spatio-temporal berbasis multi-sumber menjadi langkah inovatif guna menambang pola distribusi serta memitigasi disparitas pasokan secara presisi demi mendukung tercapainya kemandirian pangan nasional.
 
-Fokus penelitian ini adalah mengembangkan sistem \textit{data mining} PanganFlow.ID untuk memecahkan tiga rumusan masalah utama:
-\begin{enumerate}
-    \item provinsi mana yang mengalami tekanan pasokan dan gejolak harga pangan paling kritis,
-    \item wilayah mana yang memiliki potensi surplus terbesar untuk menyokong kebutuhan daerah lain, serta
-    \item pasangan asal-tujuan (\textit{flow}) antardaerah mana yang menjadi prioritas utama untuk intervensi redistribusi.
-\end{enumerate}
-Adapun batasan masalah dalam penelitian ini didefinisikan sebagai berikut: (1) komoditas dibatasi pada Beras Medium untuk menjaga konsistensi data produksi BPS dan harga eceran Bapanas; (2) neraca surplus-defisit dihitung berdasarkan estimasi kebutuhan tahunan kolektif (\textit{proxy} struktural), bukan mencerminkan stok fisik harian di gudang; dan (3) rekomendasi aliran redistribusi diposisikan sebagai acuan prioritas tinjauan kebijakan pemerintah, bukan sebagai perintah logistik operasional final.
+Fokus penelitian ini adalah mengembangkan sistem \textit{data mining} PanganFlow.ID untuk memecahkan tiga rumusan masalah utama: (1) provinsi mana yang mengalami tekanan pasokan dan gejolak harga pangan paling kritis; (2) wilayah mana yang memiliki potensi surplus terbesar untuk menyokong kebutuhan daerah lain; serta (3) pasangan asal-tujuan (\textit{flow}) antardaerah mana yang menjadi prioritas utama untuk intervensi redistribusi. Adapun batasan masalah dalam penelitian ini didefinisikan sebagai berikut: (1) komoditas dibatasi pada Beras Medium untuk menjaga konsistensi data produksi BPS dan harga eceran Bapanas; (2) neraca surplus-defisit dihitung berdasarkan estimasi kebutuhan tahunan kolektif (\textit{proxy} struktural), bukan mencerminkan stok fisik harian di gudang; dan (3) rekomendasi aliran redistribusi diposisikan sebagai acuan prioritas tinjauan kebijakan pemerintah, bukan sebagai perintah logistik operasional final.
 
 
 
@@ -122,10 +116,9 @@ Dataset final berbentuk panel provinsi-bulan-komoditas sebanyak 1.904 baris, men
     Bapanas Monthly Consumer Price & loaded & 1904 \\
     \bottomrule
   \end{tabular}
-  \\vspace{2pt}
+  \par\vspace{6pt}
   {\footnotesize \textit{Catatan:} Baris dengan nilai 0 menandakan endpoint PIHPS tidak mengembalikan data untuk parameter yang digunakan.}
-\end{table}
-
+  \end{table}
 Kebutuhan beras daerah diproksikan sebagai jumlah populasi dikalikan konsumsi beras per kapita tahunan (81,23 kg/tahun) \cite{17}. \textit{Surplus proxy} dihitung sebagai total produksi beras tahunan \cite{16} dikurangi total kebutuhan tahunan. Mengingat ketiadaan data stok fisik riil antargudang bulanan yang bersifat publik dan \textit{open-access}, nilai neraca ini diperlakukan sebagai \textit{proxy} struktural spatio-temporal.
 
 
@@ -148,7 +141,7 @@ Bobot pada persamaan (\ref{eq:priority}) diperoleh dari rata-rata \textit{featur
 
 Model hibrida akhir menggabungkan \textit{weighted priority index} linear dengan skor prediksi non-linear dari \textit{Random Forest} melalui perpaduan pembobotan berikut:
 \begin{equation}
-\text{score} = 0,72 \times \text{weighted\_index} + 0,28 \times \text{rf\_prediction\_norm}
+\text{score} = 0.72 \times \text{weighted\_index} + 0.28 \times \text{rf\_prediction\_norm}
 \end{equation}
 
 Lima baseline digunakan sebagai pembanding:
