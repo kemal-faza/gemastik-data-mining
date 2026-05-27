@@ -122,7 +122,7 @@ Dataset final berbentuk panel provinsi-bulan-komoditas sebanyak 1.904 baris, men
     Bapanas Monthly Consumer Price & loaded & 1904 \\
     \bottomrule
   \end{tabular}
-  \\vspace{2pt}
+  \vspace{6pt}
   {\footnotesize \textit{Catatan:} Baris dengan nilai 0 menandakan endpoint PIHPS tidak mengembalikan data untuk parameter yang digunakan.}
 \end{table}
 
@@ -148,7 +148,7 @@ Bobot pada persamaan (\ref{eq:priority}) diperoleh dari rata-rata \textit{featur
 
 Model hibrida akhir menggabungkan \textit{weighted priority index} linear dengan skor prediksi non-linear dari \textit{Random Forest} melalui perpaduan pembobotan berikut:
 \begin{equation}
-\text{score} = 0,72 \times \text{weighted\_index} + 0,28 \times \text{rf\_prediction\_norm}
+\text{score} = 0.72 \times \text{weighted\_index} + 0.28 \times \text{rf\_prediction\_norm}
 \end{equation}
 
 Lima baseline digunakan sebagai pembanding:
