@@ -212,18 +212,22 @@ Gambar \ref{fig:feature_importance} dan Gambar \ref{fig:shap_summary} mengonfirm
   \end{tabular}
 \end{table}
 Gambar \ref{fig:feature_importance} menampilkan peringkat fitur berdasarkan \textit{impurity-based importance}, sementara Gambar \ref{fig:shap_summary} menyajikan kontribusi fitur dari perspektif \textit{SHAP values} yang mempertimbangkan interaksi non-linear antarfitur.
-\begin{figure}[H]
+\begin{figure*}[t]
   \centering
-  \includegraphics[width=0.48\columnwidth]{feature_importance.png}
-  \caption{Feature importance model prioritas.}
-  \label{fig:feature_importance}
-\end{figure}
-\begin{figure}[H]
-  \centering
-  \includegraphics[width=0.48\columnwidth]{shap_summary.png}
-  \caption{SHAP summary plot -- kontribusi fitur terhadap output model.}
-  \label{fig:shap_summary}
-\end{figure}
+  \begin{minipage}{0.49\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{feature_importance.png}
+    \caption{Feature importance model prioritas.}
+    \label{fig:feature_importance}
+  \end{minipage}
+  \hfill
+  \begin{minipage}{0.49\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{shap_summary.png}
+    \caption{SHAP summary plot -- kontribusi fitur terhadap output model.}
+    \label{fig:shap_summary}
+  \end{minipage}
+\end{figure*}
 
 \begin{table}[H]
   \footnotesize
@@ -278,18 +282,22 @@ Aliran Peringkat 2: Jawa Timur menuju Papua Pegunungan memperoleh skor prioritas
 
 Aliran Peringkat 3: Jawa Tengah menuju Papua Pegunungan memperoleh skor prioritas 91,03. Faktor pendukung utama meliputi: selisih harga beras sebesar Rp12.346/kg, kapasitas surplus produsen sebesar 1,97 juta ton, serta defisit lokal tujuan sebesar 0,12 juta ton.
 Peta centroid tekanan beras pada Gambar \ref{fig:pressure_map} mengonfirmasi konsentrasi wilayah rentan di Indonesia bagian timur, sedangkan Gambar \ref{fig:flow_network} merepresentasikan jaringan rekomendasi aliran antarprovinsi dengan ketebalan garis mencerminkan skor prioritas. Gambar \ref{fig:top_flows} menyajikan 10 pasangan aliran prioritas tertinggi yang dihasilkan sistem, dengan dominasi koridor Sulawesi dan Jawa menuju Papua.
-\begin{figure}[H]
+\begin{figure*}[t]
   \centering
-  \includegraphics[width=0.48\columnwidth]{pressure_centroid_map.png}
-  \caption{Peta centroid tekanan beras nasional.}
-  \label{fig:pressure_map}
-\end{figure}
-\begin{figure}[H]
-  \centering
-  \includegraphics[width=0.48\columnwidth]{flow_network.png}
-  \caption{Visualisasi jaringan rekomendasi aliran antarprovinsi.}
-  \label{fig:flow_network}
-\end{figure}
+  \begin{minipage}{0.49\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{pressure_centroid_map.png}
+    \caption{Peta centroid tekanan beras nasional.}
+    \label{fig:pressure_map}
+  \end{minipage}
+  \hfill
+  \begin{minipage}{0.49\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{flow_network.png}
+    \caption{Visualisasi jaringan rekomendasi aliran antarprovinsi.}
+    \label{fig:flow_network}
+  \end{minipage}
+\end{figure*}
 \begin{figure}[H]
   \centering
   \includegraphics[width=0.48\columnwidth]{top_flow_recommendations.png}
