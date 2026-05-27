@@ -167,11 +167,6 @@ Untuk mengevaluasi performa model, lima \textit{baseline} digunakan sebagai pemb
 
 Tabel \ref{tab:metrics} dan Gambar \ref{fig:model_comparison} memaparkan bahwa model hibrida PanganFlow mencapai NDCG@K sebesar 0,937, mengungguli \textit{weighted index} (0,929) serta seluruh \textit{baseline} lainnya. Meskipun peningkatan (\textit{lift}) terhadap \textit{weighted index} relatif kecil (0,9\%), model regresi \textit{Random Forest} berhasil menangkap pola interaksi non-linear antarlapisan fitur yang tidak terdeteksi oleh indeks pembobotan linear sederhana.
 
-Tabel \ref{tab:ablation} menyajikan hasil studi ablasi (\textit{ablation study}) terhadap kontribusi masing-masing kelompok fitur. Fitur neraca pangan (\textit{balance}) terbukti menjadi kontributor terbesar bagi performa model; ketiadaan fitur ini menurunkan NDCG@K dari 0,905 menjadi 0,880.
-Menariknya, konfigurasi tanpa fitur spasial (NDCG@K=0,912) sedikit mengungguli konfigurasi semua fitur (NDCG@K=0,905). Fenomena ini disebabkan oleh redundansi informasi antara \textit{Haversine distance} dan variabel pengelompokan wilayah (\textit{region grouping}). Ketika kedua informasi ini hadir bersamaan, \textit{multicollinearity} menimbulkan \textit{noise} yang sedikit menurunkan kemampuan generalisasi model. Sebaliknya, fitur spasial memberikan kontribusi marginal terkecil karena efek kedekatan geografis sebagian besar telah direpresentasikan oleh pengelompokan wilayah (\textit{region grouping}).
-
-Gambar \ref{fig:feature_importance} dan Gambar \ref{fig:shap_summary} mengonfirmasi dominasi fitur harga dan neraca pangan dalam prediksi model, dengan variabel \texttt{surplus\_proxy\_ton} dan \texttt{price\_gap\_score} menempati peringkat teratas dalam skor kepentingan fitur (\textit{feature importance}). Analisis \textit{error} spasial (Tabel \ref{tab:error}) menunjukkan bahwa wilayah Maluku-Papua mencatat tingkat kesalahan prediksi tertinggi, merefleksikan volatilitas data yang dinamis di Indonesia bagian timur.
-
 \begin{table}[H]
   \footnotesize
   \caption{Hasil evaluasi peringkat provinsi prioritas.}
@@ -196,6 +191,8 @@ Gambar \ref{fig:feature_importance} dan Gambar \ref{fig:shap_summary} mengonfirm
   \label{fig:model_comparison}
 \end{figure}
 
+Tabel \ref{tab:ablation} menyajikan hasil studi ablasi (\textit{ablation study}) terhadap kontribusi masing-masing kelompok fitur. Fitur neraca pangan (\textit{balance}) terbukti menjadi kontributor terbesar bagi performa model; ketiadaan fitur ini menurunkan NDCG@K dari 0,905 menjadi 0,880. Menariknya, konfigurasi tanpa fitur spasial (NDCG@K=0,912) sedikit mengungguli konfigurasi semua fitur (NDCG@K=0,905). Fenomena ini disebabkan oleh redundansi informasi antara \textit{Haversine distance} dan variabel pengelompokan wilayah (\textit{region grouping}). Ketika kedua informasi ini hadir bersamaan, \textit{multicollinearity} menimbulkan \textit{noise} yang sedikit menurunkan kemampuan generalisasi model. Sebaliknya, fitur spasial memberikan kontribusi marginal terkecil karena efek kedekatan geografis sebagian besar telah direpresentasikan oleh pengelompokan wilayah (\textit{region grouping}).
+
 \begin{table}[H]
   \footnotesize
   \caption{Studi ablasi kontribusi keluarga fitur.}
@@ -211,23 +208,22 @@ Gambar \ref{fig:feature_importance} dan Gambar \ref{fig:shap_summary} mengonfirm
     \bottomrule
   \end{tabular}
 \end{table}
-Gambar \ref{fig:feature_importance} menampilkan peringkat fitur berdasarkan \textit{impurity-based importance}, sementara Gambar \ref{fig:shap_summary} menyajikan kontribusi fitur dari perspektif \textit{SHAP values} yang mempertimbangkan interaksi non-linear antarfitur.
-\begin{figure*}[t]
+
+Gambar \ref{fig:feature_importance} dan Gambar \ref{fig:shap_summary} mengonfirmasi dominasi fitur harga dan neraca pangan dalam prediksi model, dengan variabel \texttt{surplus\_proxy\_ton} dan \texttt{price\_gap\_score} menempati peringkat teratas dalam skor kepentingan fitur (\textit{feature importance}). Analisis \textit{error} spasial (Tabel \ref{tab:error}) menunjukkan bahwa wilayah Maluku-Papua mencatat tingkat kesalahan prediksi tertinggi, merefleksikan volatilitas data yang dinamis di Indonesia bagian timur.
+
+\begin{figure}[H]
   \centering
-  \begin{minipage}{0.49\textwidth}
-    \centering
-    \includegraphics[width=\linewidth]{feature_importance.png}
-    \caption{Feature importance model prioritas.}
-    \label{fig:feature_importance}
-  \end{minipage}
-  \hfill
-  \begin{minipage}{0.49\textwidth}
-    \centering
-    \includegraphics[width=\linewidth]{shap_summary.png}
-    \caption{SHAP summary plot -- kontribusi fitur terhadap output model.}
-    \label{fig:shap_summary}
-  \end{minipage}
-\end{figure*}
+  \includegraphics[width=0.48\columnwidth]{feature_importance.png}
+  \caption{Feature importance model prioritas.}
+  \label{fig:feature_importance}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.48\columnwidth]{shap_summary.png}
+  \caption{SHAP summary plot -- kontribusi fitur terhadap output model.}
+  \label{fig:shap_summary}
+\end{figure}
 
 \begin{table}[H]
   \footnotesize
@@ -281,23 +277,23 @@ Aliran Peringkat 1: Sulawesi Selatan menuju Papua Pegunungan memperoleh skor pri
 Aliran Peringkat 2: Jawa Timur menuju Papua Pegunungan memperoleh skor prioritas 95,54. Faktor pendukung utama meliputi: selisih harga beras sebesar Rp12.758/kg, kapasitas surplus produsen sebesar 2,14 juta ton, serta defisit lokal tujuan sebesar 0,12 juta ton.
 
 Aliran Peringkat 3: Jawa Tengah menuju Papua Pegunungan memperoleh skor prioritas 91,03. Faktor pendukung utama meliputi: selisih harga beras sebesar Rp12.346/kg, kapasitas surplus produsen sebesar 1,97 juta ton, serta defisit lokal tujuan sebesar 0,12 juta ton.
+
 Peta centroid tekanan beras pada Gambar \ref{fig:pressure_map} mengonfirmasi konsentrasi wilayah rentan di Indonesia bagian timur, sedangkan Gambar \ref{fig:flow_network} merepresentasikan jaringan rekomendasi aliran antarprovinsi dengan ketebalan garis mencerminkan skor prioritas. Gambar \ref{fig:top_flows} menyajikan 10 pasangan aliran prioritas tertinggi yang dihasilkan sistem, dengan dominasi koridor Sulawesi dan Jawa menuju Papua.
-\begin{figure*}[t]
+
+\begin{figure}[H]
   \centering
-  \begin{minipage}{0.49\textwidth}
-    \centering
-    \includegraphics[width=\linewidth]{pressure_centroid_map.png}
-    \caption{Peta centroid tekanan beras nasional.}
-    \label{fig:pressure_map}
-  \end{minipage}
-  \hfill
-  \begin{minipage}{0.49\textwidth}
-    \centering
-    \includegraphics[width=\linewidth]{flow_network.png}
-    \caption{Visualisasi jaringan rekomendasi aliran antarprovinsi.}
-    \label{fig:flow_network}
-  \end{minipage}
-\end{figure*}
+  \includegraphics[width=0.48\columnwidth]{pressure_centroid_map.png}
+  \caption{Peta centroid tekanan beras nasional.}
+  \label{fig:pressure_map}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.48\columnwidth]{flow_network.png}
+  \caption{Visualisasi jaringan rekomendasi aliran antarprovinsi.}
+  \label{fig:flow_network}
+\end{figure}
+
 \begin{figure}[H]
   \centering
   \includegraphics[width=0.48\columnwidth]{top_flow_recommendations.png}
@@ -307,6 +303,7 @@ Peta centroid tekanan beras pada Gambar \ref{fig:pressure_map} mengonfirmasi kon
 
 \textbf{Implementasi Dashboard.} PanganFlow.ID dilengkapi dengan pratinjau sistem pemantauan interaktif (\textit{Watchboard}) berbasis Streamlit untuk memfasilitasi eksplorasi visual. Aplikasi dashboard ini terbagi dalam lima panel fungsional, yaitu: peta spasial tekanan pangan, daftar urutan prioritas wilayah, jaringan panah visualisasi rekomendasi \textit{flow}, rincian profil daerah, serta tab verifikasi kualitas dataset. Setiap rekomendasi aliran dilengkapi argumen penjelas secara otomatis (misalnya, ``selisih harga Rp12.581/kg; kapasitas surplus asal 2,31 juta ton'') untuk menunjang keterbacaan hasil model. Dashboard ini dapat dijalankan menggunakan perintah:
 \texttt{python dashboard/app.py}.
+
 \begin{figure}[H]
   \centering
   \includegraphics[width=0.45\columnwidth]{dashboard_preview.png}
