@@ -20,19 +20,19 @@ env/
 !.env.example
 
 # LaTeX Compilation Auxiliary Files
-**/reports/*.aux
-**/reports/*.log
-**/reports/*.out
-**/reports/*.toc
-**/reports/*.synctex.gz
-**/reports/*.bbl
-**/reports/*.blg
-**/reports/*.pdf
+**/reports/**/*.aux
+**/reports/**/*.log
+**/reports/**/*.out
+**/reports/**/*.toc
+**/reports/**/*.synctex.gz
+**/reports/**/*.bbl
+**/reports/**/*.blg
 *.pdf
 
-# Rendered Docs
+# Rendered Docs & Extracted Archives
 **/reports/rendered_docx*/
-
+**/reports/extracted_overleaf/
+compiled_report.txt
 # Scraping & Raw Data Snapshots
 **/data/raw/live_*.csv
 **/data/raw/*.html
@@ -55,5 +55,6 @@ Thumbs.db
 .antigravitycli/
 .sisyphus/
 *.bak*
+*.~lock.*
 Panduan-GEMASTIK-2025-Data-Mining.txt
 Winner-Level-Playbook.txt
