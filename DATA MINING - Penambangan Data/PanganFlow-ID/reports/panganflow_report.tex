@@ -4,13 +4,13 @@
 \usepackage{booktabs}
 \usepackage{times}
 \usepackage{amsmath}
-\usepackage[tableposition=top]{caption}
+\usepackage[font=small]{caption}
 \usepackage[section]{placeins}
 \usepackage{float}
 \usepackage{cite}
 \usepackage{hyperref}
 \hypersetup{pdfauthor={Muhamad Kemal Faza, Muchammad Yuda Tri Ananda, Muhammad Akmal Fazli Riyadi, Henri Tantyoko}, pdfsubject={GEMASTIK XVIII Data Mining}, colorlinks=true, citecolor=blue, urlcolor=blue}
-\graphicspath{{./}}
+\graphicspath{{./figures/}}
 \setlength{\parindent}{1em}
 \setlength{\parskip}{0.5ex}
 
@@ -55,7 +55,13 @@ Kemandirian bangsa yang kokoh berakar pada ketahanan sektor strategisnya, salah 
 
 Dari 38 provinsi di Indonesia, hanya 14 provinsi yang mencatat surplus produksi beras (terkonsentrasi di Pulau Jawa dan Sulawesi Selatan), sedangkan 24 provinsi lainnya secara konsisten mengalami defisit pasokan lokal. Region Maluku-Papua merupakan wilayah yang paling rentan; seluruh provinsi di wilayah tersebut mengalami defisit produksi struktural dengan tingkat harga eceran melampaui median nasional. Kondisi geografis kepulauan Indonesia menuntut adanya pendekatan Teknologi Informasi dan Komunikasi (TIK) yang cerdas dan prediktif. Pemanfaatan metodologi \textit{data mining} spatio-temporal berbasis multi-sumber menjadi langkah inovatif guna menambang pola distribusi serta memitigasi disparitas pasokan secara presisi demi mendukung tercapainya kemandirian pangan nasional.
 
-Fokus penelitian ini adalah mengembangkan sistem \textit{data mining} PanganFlow.ID untuk memecahkan tiga rumusan masalah utama: (1) provinsi mana yang mengalami tekanan pasokan dan gejolak harga pangan paling kritis, (2) wilayah mana yang memiliki potensi surplus terbesar untuk menyokong kebutuhan daerah lain, serta (3) pasangan asal-tujuan (\textit{flow}) antardaerah mana yang menjadi prioritas utama untuk intervensi redistribusi. Adapun batasan masalah dalam penelitian ini didefinisikan sebagai berikut: (1) komoditas dibatasi pada Beras Medium untuk menjaga konsistensi data produksi BPS dan harga eceran Bapanas; (2) neraca surplus-defisit dihitung berdasarkan estimasi kebutuhan tahunan kolektif (\textit{proxy} struktural), bukan mencerminkan stok fisik harian di gudang; dan (3) rekomendasi aliran redistribusi diposisikan sebagai acuan prioritas tinjauan kebijakan pemerintah, bukan sebagai perintah logistik operasional final.
+Fokus penelitian ini adalah mengembangkan sistem \textit{data mining} PanganFlow.ID untuk memecahkan tiga rumusan masalah utama:
+\begin{enumerate}
+    \item provinsi mana yang mengalami tekanan pasokan dan gejolak harga pangan paling kritis,
+    \item wilayah mana yang memiliki potensi surplus terbesar untuk menyokong kebutuhan daerah lain, serta
+    \item pasangan asal-tujuan (\textit{flow}) antardaerah mana yang menjadi prioritas utama untuk intervensi redistribusi.
+\end{enumerate}
+Adapun batasan masalah dalam penelitian ini didefinisikan sebagai berikut: (1) komoditas dibatasi pada Beras Medium untuk menjaga konsistensi data produksi BPS dan harga eceran Bapanas; (2) neraca surplus-defisit dihitung berdasarkan estimasi kebutuhan tahunan kolektif (\textit{proxy} struktural), bukan mencerminkan stok fisik harian di gudang; dan (3) rekomendasi aliran redistribusi diposisikan sebagai acuan prioritas tinjauan kebijakan pemerintah, bukan sebagai perintah logistik operasional final.
 
 
 
@@ -101,12 +107,12 @@ Random Forest ranking, dan graph-based redistribution scoring menjadi pipeline t
 Dataset final berbentuk panel provinsi-bulan-komoditas sebanyak 1.904 baris, mencakup 38 provinsi dan periode 1 Januari 2021 sampai 1 Juni 2025. Komoditas dibatasi pada Beras Medium agar perhitungan surplus-defisit konsisten dengan data produksi beras Badan Pusat Statistik (BPS) \cite{16} dan konsumsi beras per kapita tahunan \cite{17}. Harga pangan eceran bersumber dari Badan Pangan Nasional (Bapanas) \cite{15}, sedangkan referensi pelengkap dihimpun dari Pusat Informasi Harga Pangan Strategis (PIHPS) Bank Indonesia \cite{14}.
 
 \begin{table}[H]
-  \scriptsize
-  \caption{Status sumber data resmi dan snapshot.}
+  \footnotesize
+  \caption{Status sumber data resmi.}
   \label{tab:source_status}
   \begin{tabular}{lrr}
     \toprule
-    source & status & rows \\
+    Sumber Data & Status & Baris \\
     \midrule
     BI PIHPS Province Reference & downloaded & 35 \\
     BI PIHPS Commodity Reference & downloaded & 31 \\
@@ -116,6 +122,8 @@ Dataset final berbentuk panel provinsi-bulan-komoditas sebanyak 1.904 baris, men
     Bapanas Monthly Consumer Price & loaded & 1904 \\
     \bottomrule
   \end{tabular}
+  \\vspace{2pt}
+  {\footnotesize \textit{Catatan:} Baris dengan nilai 0 menandakan endpoint PIHPS tidak mengembalikan data untuk parameter yang digunakan.}
 \end{table}
 
 Kebutuhan beras daerah diproksikan sebagai jumlah populasi dikalikan konsumsi beras per kapita tahunan (81,23 kg/tahun) \cite{17}. \textit{Surplus proxy} dihitung sebagai total produksi beras tahunan \cite{16} dikurangi total kebutuhan tahunan. Mengingat ketiadaan data stok fisik riil antargudang bulanan yang bersifat publik dan \textit{open-access}, nilai neraca ini diperlakukan sebagai \textit{proxy} struktural spatio-temporal.
@@ -127,11 +135,14 @@ Kebutuhan beras daerah diproksikan sebagai jumlah populasi dikalikan konsumsi be
 
 Keempat, regresi \textit{Random Forest} \cite{11} dengan konfigurasi hiperparameter optimal (\texttt{n\_estimators=260}, \texttt{min\_samples\_leaf=3}, \texttt{random\_state=42}) digunakan untuk mempelajari pola prioritas wilayah sasaran intervensi pada bulan berikutnya menggunakan \textit{temporal split} (15\% data akhir sebagai \textit{holdout set} pengujian). Kelima, metode \textit{K-Means clustering} \cite{13} (\texttt{k=4}, \texttt{n\_init=20}) dengan reduksi dimensi PCA 2 komponen digunakan untuk memetakan tipologi spasial ketahanan beras tiap provinsi. Keenam, hubungan \textit{flow} logistik antarpasangan provinsi surplus-defisit dianalisis secara grafis berdasarkan jarak geografis (\textit{Haversine}) dan kombinasi sinyal ekonomi melalui formula prioritas berikut:
 
+Bobot pada persamaan (\ref{eq:priority}) diperoleh dari rata-rata \textit{feature importance} model \textit{Random Forest} yang telah dinormalisasi, dikombinasikan dengan \textit{expert calibration} untuk memastikan bahwa \textit{price\_gap} serta \textit{surplus/deficit} tetap menjadi kontributor dominan. Tanda negatif pada \textit{distance} merepresentasikan penalti logistik spasial.
+
 \begin{equation}
+\label{eq:priority}
 \begin{aligned}
-\text{priority\_score} =\ & 0,31 \times \text{price\_gap} + 0,27 \times \text{deficit} \\
-& + 0,23 \times \text{surplus} + 0,14 \times \text{model} \\
-& + 0,10 \times \text{anomaly} - 0,15 \times \text{distance}
+\text{priority\_score} =\ & 0.31 \times \text{price\_gap} + 0.27 \times \text{deficit} \\
+& + 0.23 \times \text{surplus} + 0.14 \times \text{model} \\
+& + 0.10 \times \text{anomaly} - 0.15 \times \text{distance}
 \end{aligned}
 \end{equation}
 
@@ -156,7 +167,8 @@ Untuk mengevaluasi performa model, lima \textit{baseline} digunakan sebagai pemb
 
 Tabel \ref{tab:metrics} dan Gambar \ref{fig:model_comparison} memaparkan bahwa model hibrida PanganFlow mencapai NDCG@K sebesar 0,937, mengungguli \textit{weighted index} (0,929) serta seluruh \textit{baseline} lainnya. Meskipun peningkatan (\textit{lift}) terhadap \textit{weighted index} relatif kecil (0,9\%), model regresi \textit{Random Forest} berhasil menangkap pola interaksi non-linear antarlapisan fitur yang tidak terdeteksi oleh indeks pembobotan linear sederhana.
 
-Tabel \ref{tab:ablation} menyajikan hasil studi ablasi (\textit{ablation study}) terhadap kontribusi masing-masing kelompok fitur. Fitur neraca pangan (\textit{balance}) terbukti menjadi kontributor terbesar bagi performa model; ketiadaan fitur ini menurunkan NDCG@K dari 0,905 menjadi 0,880. Sebaliknya, fitur spasial memberikan kontribusi marginal terkecil karena efek kedekatan geografis sebagian besar telah direpresentasikan oleh pengelompokan wilayah (\textit{region grouping}).
+Tabel \ref{tab:ablation} menyajikan hasil studi ablasi (\textit{ablation study}) terhadap kontribusi masing-masing kelompok fitur. Fitur neraca pangan (\textit{balance}) terbukti menjadi kontributor terbesar bagi performa model; ketiadaan fitur ini menurunkan NDCG@K dari 0,905 menjadi 0,880.
+Menariknya, konfigurasi tanpa fitur spasial (NDCG@K=0,912) sedikit mengungguli konfigurasi semua fitur (NDCG@K=0,905). Fenomena ini disebabkan oleh redundansi informasi antara \textit{Haversine distance} dan variabel pengelompokan wilayah (\textit{region grouping}). Ketika kedua informasi ini hadir bersamaan, \textit{multicollinearity} menimbulkan \textit{noise} yang sedikit menurunkan kemampuan generalisasi model. Sebaliknya, fitur spasial memberikan kontribusi marginal terkecil karena efek kedekatan geografis sebagian besar telah direpresentasikan oleh pengelompokan wilayah (\textit{region grouping}).
 
 Gambar \ref{fig:feature_importance} dan Gambar \ref{fig:shap_summary} mengonfirmasi dominasi fitur harga dan neraca pangan dalam prediksi model, dengan variabel \texttt{surplus\_proxy\_ton} dan \texttt{price\_gap\_score} menempati peringkat teratas dalam skor kepentingan fitur (\textit{feature importance}). Analisis \textit{error} spasial (Tabel \ref{tab:error}) menunjukkan bahwa wilayah Maluku-Papua mencatat tingkat kesalahan prediksi tertinggi, merefleksikan volatilitas data yang dinamis di Indonesia bagian timur.
 
@@ -179,7 +191,7 @@ Gambar \ref{fig:feature_importance} dan Gambar \ref{fig:shap_summary} mengonfirm
 
 \begin{figure}[H]
   \centering
-  \includegraphics[width=0.48\columnwidth]{figures/model_comparison.png}
+  \includegraphics[width=0.48\columnwidth]{model_comparison.png}
   \caption{Perbandingan NDCG@K antar model.}
   \label{fig:model_comparison}
 \end{figure}
@@ -199,17 +211,16 @@ Gambar \ref{fig:feature_importance} dan Gambar \ref{fig:shap_summary} mengonfirm
     \bottomrule
   \end{tabular}
 \end{table}
-
+Gambar \ref{fig:feature_importance} menampilkan peringkat fitur berdasarkan \textit{impurity-based importance}, sementara Gambar \ref{fig:shap_summary} menyajikan kontribusi fitur dari perspektif \textit{SHAP values} yang mempertimbangkan interaksi non-linear antarfitur.
 \begin{figure}[H]
   \centering
-  \includegraphics[width=0.48\columnwidth]{figures/feature_importance.png}
+  \includegraphics[width=0.48\columnwidth]{feature_importance.png}
   \caption{Feature importance model prioritas.}
   \label{fig:feature_importance}
 \end{figure}
-
 \begin{figure}[H]
   \centering
-  \includegraphics[width=0.48\columnwidth]{figures/shap_summary.png}
+  \includegraphics[width=0.48\columnwidth]{shap_summary.png}
   \caption{SHAP summary plot -- kontribusi fitur terhadap output model.}
   \label{fig:shap_summary}
 \end{figure}
@@ -218,7 +229,6 @@ Gambar \ref{fig:feature_importance} dan Gambar \ref{fig:shap_summary} mengonfirm
   \footnotesize
   \caption{Top-5 provinsi dengan tingkat \textit{error} prediksi tertinggi.}
   \label{tab:error}
-  \resizebox{\columnwidth}{!}{%
   \begin{tabular}{lrrr}
     \toprule
     Provinsi & Wilayah & MAE & RMSE \\
@@ -229,8 +239,7 @@ Gambar \ref{fig:feature_importance} dan Gambar \ref{fig:shap_summary} mengonfirm
     DKI Jakarta & Jawa & 0,102 & 0,103 \\
     Maluku Utara & Maluku-Papua & 0,100 & 0,111 \\
     \bottomrule
-  \end{tabular}%
-  }
+  \end{tabular}
 \end{table}
 
 
@@ -249,20 +258,18 @@ Untuk rute lintas pulau jarak jauh seperti Sulawesi menuju Papua, kendala hambat
   \footnotesize
   \caption{Rekomendasi aliran prioritas redistribusi beras.}
   \label{tab:flows}
-  \resizebox{\columnwidth}{!}{%
-  \begin{tabular}{lrrr}
+  \begin{tabular}{l l r}
     \toprule
-    Peringkat & Provinsi Asal & Provinsi Tujuan & Skor Prioritas \\
+    Peringkat & Aliran (Asal $\to$ Tujuan) & Skor Prioritas \\
     \midrule
-    1 & Sulawesi Selatan & Papua Pegunungan & 100,0 \\
-    2 & Jawa Timur & Papua Pegunungan & 95,54 \\
-    3 & Jawa Tengah & Papua Pegunungan & 91,03 \\
-    4 & Jawa Barat & Papua Pegunungan & 83,49 \\
-    5 & Sumatera Selatan & Papua Pegunungan & 78,93 \\
-    6 & Nusa Tenggara Barat & Papua Pegunungan & 76,72 \\
+    1 & Sulawesi Selatan $\to$ Papua Pegunungan & 100,0 \\
+    2 & Jawa Timur $\to$ Papua Pegunungan & 95,54 \\
+    3 & Jawa Tengah $\to$ Papua Pegunungan & 91,03 \\
+    4 & Jawa Barat $\to$ Papua Pegunungan & 83,49 \\
+    5 & Sumatera Selatan $\to$ Papua Pegunungan & 78,93 \\
+    6 & Nusa Tenggara Barat $\to$ Papua Pegunungan & 76,72 \\
     \bottomrule
-  \end{tabular}%
-  }
+  \end{tabular}
 \end{table}
 
 Aliran Peringkat 1: Sulawesi Selatan menuju Papua Pegunungan memperoleh skor prioritas 100,0. Faktor pendukung utama meliputi: selisih harga beras sebesar Rp12.581/kg, kapasitas surplus produsen sebesar 2,31 juta ton, serta defisit lokal tujuan sebesar 0,12 juta ton. Rute logistik antarpulau ini memerlukan koordinasi distribusi lintas wilayah.
@@ -270,24 +277,22 @@ Aliran Peringkat 1: Sulawesi Selatan menuju Papua Pegunungan memperoleh skor pri
 Aliran Peringkat 2: Jawa Timur menuju Papua Pegunungan memperoleh skor prioritas 95,54. Faktor pendukung utama meliputi: selisih harga beras sebesar Rp12.758/kg, kapasitas surplus produsen sebesar 2,14 juta ton, serta defisit lokal tujuan sebesar 0,12 juta ton.
 
 Aliran Peringkat 3: Jawa Tengah menuju Papua Pegunungan memperoleh skor prioritas 91,03. Faktor pendukung utama meliputi: selisih harga beras sebesar Rp12.346/kg, kapasitas surplus produsen sebesar 1,97 juta ton, serta defisit lokal tujuan sebesar 0,12 juta ton.
-
+Peta centroid tekanan beras pada Gambar \ref{fig:pressure_map} mengonfirmasi konsentrasi wilayah rentan di Indonesia bagian timur, sedangkan Gambar \ref{fig:flow_network} merepresentasikan jaringan rekomendasi aliran antarprovinsi dengan ketebalan garis mencerminkan skor prioritas. Gambar \ref{fig:top_flows} menyajikan 10 pasangan aliran prioritas tertinggi yang dihasilkan sistem, dengan dominasi koridor Sulawesi dan Jawa menuju Papua.
 \begin{figure}[H]
   \centering
-  \includegraphics[width=0.48\columnwidth]{figures/pressure_centroid_map.png}
+  \includegraphics[width=0.48\columnwidth]{pressure_centroid_map.png}
   \caption{Peta centroid tekanan beras nasional.}
   \label{fig:pressure_map}
 \end{figure}
-
 \begin{figure}[H]
   \centering
-  \includegraphics[width=0.48\columnwidth]{figures/flow_network.png}
+  \includegraphics[width=0.48\columnwidth]{flow_network.png}
   \caption{Visualisasi jaringan rekomendasi aliran antarprovinsi.}
   \label{fig:flow_network}
 \end{figure}
-
 \begin{figure}[H]
   \centering
-  \includegraphics[width=0.48\columnwidth]{figures/top_flow_recommendations.png}
+  \includegraphics[width=0.48\columnwidth]{top_flow_recommendations.png}
   \caption{Top-10 rekomendasi aliran beras nasional.}
   \label{fig:top_flows}
 \end{figure}
@@ -296,7 +301,7 @@ Aliran Peringkat 3: Jawa Tengah menuju Papua Pegunungan memperoleh skor priorita
 \texttt{python dashboard/app.py}.
 \begin{figure}[H]
   \centering
-  \includegraphics[width=0.45\columnwidth]{figures/dashboard_preview.png}
+  \includegraphics[width=0.45\columnwidth]{dashboard_preview.png}
   \caption{Pratinjau antarmuka sistem PanganFlow.ID.}
   \label{fig:dashboard}
 \end{figure}
@@ -304,28 +309,27 @@ Aliran Peringkat 3: Jawa Tengah menuju Papua Pegunungan memperoleh skor priorita
 
 
 \section{Clustering, Fairness, dan Studi Kasus}
-Pemetaan tipologi spasial wilayah pangan dilakukan menggunakan algoritme \textit{K-Means clustering} untuk mengelompokkan 38 provinsi menjadi 4 klaster berdasarkan skor harga dan proxy neraca beras nasional (Tabel \ref{tab:clusters}). Hasil klasterisasi divisualisasikan dengan PCA pada Gambar \ref{fig:cluster_pca} yang memperlihatkan pemisahan klaster secara jelas.
+Pemetaan tipologi spasial wilayah pangan dilakukan menggunakan algoritme \textit{K-Means clustering} untuk mengelompokkan 38 provinsi menjadi 4 klaster berdasarkan skor harga dan proxy neraca beras nasional (Tabel \ref{tab:clusters}). Pemilihan \texttt{k=4} didasarkan pada analisis \textit{elbow method} terhadap inersia (\textit{within-cluster sum of squares}) dan \textit{Silhouette score}, di mana \texttt{k=4} memberikan keseimbangan optimal antara kohesi intra-klaster dan separasi antar-klaster. Hasil klasterisasi divisualisasikan dengan PCA pada Gambar \ref{fig:cluster_pca} yang memperlihatkan pemisahan klaster secara jelas.
 
 \begin{table}[H]
+  \small
   \caption{Ringkasan hasil pemetaan klaster tipologi provinsi.}
   \label{tab:clusters}
-  \resizebox{\columnwidth}{!}{%
-  \begin{tabular}{lrrr}
+  \begin{tabular}{l r r r}
     \toprule
-    Label Klaster & Jumlah Provinsi & Rerata Skor Defisit & Rerata Skor Surplus \\
+    Label Klaster & Provinsi & Defisit & Surplus \\
     \midrule
-    Defisit Kritis (Harga Sangat Tinggi) & 1 & 0,332 & 0,090 \\
-    Defisit Moderat (Transisi/Rawan) & 12 & 0,149 & 0,232 \\
-    Surplus Moderat (Relatif Aman) & 21 & 0,025 & 0,314 \\
-    Surplus Melimpah (Sangat Stabil) & 4 & 0,003 & 0,879 \\
+    Defisit Kritis & 1 & 0,332 & 0,090 \\
+    Defisit Moderat & 12 & 0,149 & 0,232 \\
+    Surplus Moderat & 21 & 0,025 & 0,314 \\
+    Surplus Melimpah & 4 & 0,003 & 0,879 \\
     \bottomrule
-  \end{tabular}%
-  }
+  \end{tabular}
 \end{table}
 
 \begin{figure}[H]
   \centering
-  \includegraphics[width=0.48\columnwidth]{figures/cluster_pca.png}
+  \includegraphics[width=0.48\columnwidth]{cluster_pca.png}
   \caption{Visualisasi PCA klasterisasi provinsi.}
   \label{fig:cluster_pca}
 \end{figure}
@@ -333,13 +337,12 @@ Pemetaan tipologi spasial wilayah pangan dilakukan menggunakan algoritme \textit
 Evaluasi keadilan pemodelan (\textit{fairness analysis}) dilakukan melalui pemeriksaan subkelompok (\textit{subgroup analysis}) berbasis region (Tabel \ref{tab:fairness}) untuk mendeteksi potensi bias geografis. Hasil pengujian menunjukkan bahwa wilayah rentan seperti Maluku-Papua diakomodasi secara proporsional sesuai kondisi riil di lapangan.
 
 \begin{table}[H]
-  \footnotesize
+  \small
   \caption{Pemeriksaan keadilan subkelompok (\textit{subgroup fairness}) berdasarkan region.}
   \label{tab:fairness}
-  \resizebox{\columnwidth}{!}{%
-  \begin{tabular}{lrrr}
+  \begin{tabular}{l r r r}
     \toprule
-    Wilayah & Jumlah Top-10 & Pangsa Top-10 & Rerata Skor Prioritas \\
+    Wilayah & Top-10 & Pangsa & Rerata Skor \\
     \midrule
     Maluku-Papua & 7 & 0,875 & 0,196 \\
     Kalimantan & 1 & 0,200 & 0,095 \\
@@ -348,26 +351,23 @@ Evaluasi keadilan pemodelan (\textit{fairness analysis}) dilakukan melalui pemer
     Sulawesi & 0 & 0,000 & 0,029 \\
     Bali-Nusa & 0 & 0,000 & 0,009 \\
     \bottomrule
-  \end{tabular}%
-  }
+  \end{tabular}
 \end{table}
 
 \begin{table}[H]
   \footnotesize
   \caption{Studi kasus provinsi sasaran prioritas logistik.}
   \label{tab:cases}
-  \resizebox{\columnwidth}{!}{%
-  \begin{tabular}{llp{4.0cm}}
+  \begin{tabular}{l l p{2.0cm}}
     \toprule
-    Provinsi Tujuan & Rekomendasi Asal & Interpretasi Sinyal \\
+    Provinsi Tujuan & Asal & Interpretasi Sinyal \\
     \midrule
-    Papua Pegunungan & Sulawesi Selatan & Harga di atas median nasional; tren kenaikan positif; defisit \textit{proxy} neraca beras \\
-    DKI Jakarta & Jawa Timur & Defisit \textit{proxy} neraca beras secara struktural \\
-    Kalimantan Timur & Sulawesi Selatan & Harga di atas median nasional; defisit \textit{proxy} neraca beras \\
-    Papua Tengah & Sulawesi Selatan & Harga di atas median nasional; tren kenaikan positif; defisit \textit{proxy} neraca beras \\
+    Papua Pegunungan & Sulawesi Selatan & Harga $>$ median; tren naik; defisit \\
+    DKI Jakarta & Jawa Timur & Defisit \textit{proxy} neraca struktural \\
+    Kalimantan Timur & Sulawesi Selatan & Harga $>$ median; defisit \textit{proxy} \\
+    Papua Tengah & Sulawesi Selatan & Harga $>$ median; tren naik; defisit \\
     \bottomrule
-  \end{tabular}%
-  }
+  \end{tabular}
 \end{table}
 
 Pemeriksaan stabilitas model melalui perturbasi acak pada skor input (\textit{stability check}) menghasilkan rata-rata \textit{overlap} peringkat Top-10 sebesar 0,863. Hasil ini menunjukkan stabilitas peringkat PanganFlow.ID terhadap fluktuasi data minor di lapangan.
@@ -390,13 +390,13 @@ Keterbatasan penelitian ini mencakup beberapa aspek utama: (1) estimasi neraca m
 \begin{thebibliography}{99}
   \bibitem{1} E. Sediyono and D. Hartomo, ``An Integrated Framework for Multi-Commodity Agricultural Price Forecasting and Anomaly Detection,'' Semantic Scholar, 2025.
   \bibitem{2} ``Temporal and Semantic Fusion with Agentic AI for Commodity Price Shock Forecasting,'' \href{https://arxiv.org/abs/2508.06497}{arXiv:2508.06497}, 2025.
-  \bibitem{3} ``Perbandingan Kinerja LSTM, Random Forest, dan SVR untuk Prediksi Harga Beras,'' JURIKOM, 2024.
-  \bibitem{4} ``Komparasi Model ARIMA, Regresi Linear, Random Forest, dan LSTM untuk Prediksi Harga Beras,'' JIT Nurulfikri, 2024.
-  \bibitem{5} ``Rice Price Prediction in East Java Based on Weather Using LSTM,'' JAIC Polibatam, 2025.
+  \bibitem{3} C. A. Bahri and K. D. Tania, ``Perbandingan Kinerja LSTM, Random Forest, dan SVR Berbasis Knowledge Discovery untuk Prediksi Harga Beras Sumatera Selatan,'' JURIKOM (Jurnal Riset Komputer), vol. 12, no. 5, pp. 721--732, 2025, doi: \href{https://doi.org/10.30865/jurikom.v12i5.9140}{10.30865/jurikom.v12i5.9140}.
+  \bibitem{4} M. Ormanda and I. Ardiansah, ``Komparasi Model ARIMA, Regresi Linear, Random Forest, dan LSTM untuk Peramalan Harga Beras Jawa Barat,'' Jurnal Informatika Terpadu, vol. 12, no. 1, pp. 70--76, 2026, doi: \href{https://doi.org/10.54914/jit.v12i1.2789}{10.54914/jit.v12i1.2789}.
+  \bibitem{5} D. Mufidah, N. Santoso, and M. A. Nafis, ``Rice Price Prediction in East Java Based on Weather Using Long Short-Term Memory (LSTM),'' Journal of Applied Informatics and Computing (JAIC), vol. 10, no. 2, pp. 1561--1567, 2026.
   \bibitem{6} ``Performance Evaluation of Ensemble Learning Stacking in Rice Price Prediction,'' \href{https://doi.org/10.1109/10957374}{IEEE, 2024}.
-  \bibitem{7} ``Advanced Deep Learning and Hybrid Models for Forecasting Rice Production in Indonesia,'' ITS Scholar, 2024.
+  \bibitem{7} J. I. Q. Adiba, J. Slamet, A. M. Teguh, A. F. Septiyanto, and R. Sarno, ``Advanced Deep Learning and Hybrid Models for Forecasting Rice Production in Indonesia,'' in 2024 11th International Conference on Information Technology, Computer, and Electrical Engineering (ICITACEE), IEEE, pp. 302--307, 2024, doi: \href{https://doi.org/10.1109/ICITACEE62763.2024.10762812}{10.1109/ICITACEE62763.2024.10762812}.
   \bibitem{8} ``Forecasting and Spatial Distribution Analysis of Cold Chain Logistics,'' \href{https://doi.org/10.1007/s10668-025-06969-9}{Springer, 2025}.
-  \bibitem{9} ``Crop Redistribution Increases Regional Production While Reducing Resource Use,'' MDPI Agronomy, 15(9), 2148, 2025.
+  \bibitem{9} ``Crop Redistribution Increases Regional Production While Reducing Resource Use,'' MDPI Agronomy, vol. 15, no. 9, p. 2148, 2025, doi: \href{https://doi.org/10.3390/agronomy15092148}{10.3390/agronomy15092148}.
   \bibitem{10} ``Spatial Equilibrium Model-Based Optimization for Inter-Regional Grain Trade,'' Water Supply, 22(5), 5393, \href{https://iwaponline.com/ws/article/22/5/5393}{2022}.
   \bibitem{11} L. Breiman, ``Random Forests,'' Machine Learning, 45(1), 5--32, \href{https://doi.org/10.1023/A:1010933404324}{2001}.
   \bibitem{12} F. T. Liu, K. M. Ting, and Z. H. Zhou, ``Isolation Forest,'' \href{https://doi.org/10.1109/ICDM.2008.17}{ICDM, 2008}.
